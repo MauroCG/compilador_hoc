@@ -33,142 +33,142 @@ class HocParser(Parser):
 
     @_('list "\n"')
     def list(self, p):
-    	return p.list
+    	pass
 
     @_('list defn "\n"')
     def list(self, p):
-    	return p.list,p.defn
+    	pass
 
     @_('list asgn "\n"')
     def list(self, p):
-    	return p.list,p.asgn
+    	pass
 
     @_('list stmt "\n"')
     def list(self, p):
-    	return p.list,p.stmt
+    	pass
 
     @_('list expr "\n"')
     def list(self, p):
-    	return p.list,p.expr
+    	pass
 
     @_('list error "\n"')
     def list(self, p):
-    	return p.list,p.error
+    	pass
 
     @_('VAR "=" expr')
     def asgn(self, p):
         p.VAR = p.expr
-        return p.VAR
+        pass
 
     @_('VAR ADDEQ expr')
     def asgn(self, p):
         p.VAR += p.expr
-        return p.VAR
+        pass
 
     @_('VAR SUBEQ expr')
     def asgn(self, p):
         p.VAR -= p.expr
-        return p.VAR
+        rpass
 
     @_('VAR MULEQ expr')
     def asgn(self, p):
         p.VAR *= p.expr
-        return p.VAR
+        pass
 
     @_('VAR DIVEQ expr')
     def asgn(self, p):
         p.VAR /= p.expr
-        return p.VAR
+        pass
 
     @_('VAR MODEQ expr')
     def asgn(self, p):
         p.VAR %= p.expr
-        return p.VAR
+        pass
 
     @_('expr')
     def stmt(self, p):
-    	return p.expr
+    	pass
 
     @_('var VAR type "=" NUMBER')
     def stmt(self, p):
-    	return p.var,p.VAR,p.TYPE,p.number
+    	pass
 
     @_('var VAR type')
     def stmt(self, p):
-    	return p.var,p.VAR,p.TYPE
+    	pass
 
     @_('FUNC procname LPAREN formals RPAREN TYPE stmt')
     def stmt(self, p):
-    	return p.FUNC,p.procname,p.formals,p.TYPE,p.stmt
+    	pass
 
     @_('PROC procname ( formals ) stmt')
     def stmt(self, p):
-    	return p.PROC,p.procname,p.formals,p.stmt
+    	pass
 
     @_('const VAR "=" NUMBER')
     def stmt(self, p):
-    	return p.const,p.var,p.NUMBER
+    	pass
 
     @_('RETURN')
     def stmt(self, p):
-    	return p.RETURN
+    	pass
 
     @_('RETURN expr')
     def stmt(self, p):
-    	return p.RETURN,p.expr
+    	pass
 
     @_('PROCEDURE begin LPAREN arglist RPAREN')
     def stmt(self, p):
-    	return p.procedure,p.begin,p.arglist
+    	pass
 
     @_('PRINT prlist')
     def stmt(self, p):
-    	return p.print,p.prlist
+    	pass
 
     @_('while LPAREN cond RPAREN stmt ')
     def stmt(self, p):
-    	return p.WHILE,p.cond,p.stmt
+    	pass
 
     @_('for LPAREN cond COMMAP cond COMMAP cond RPAREN stmt end')
     def stmt(self, p):
-    	return p.FOR,p.cond0,p.cond1,p.stmt,p.end
+    	pass
 
     @_('if LPAREN cond RPAREN stmt end ')
     def stmt(self, p):
-    	return p.IF,p.cond,p.stmt,p.end
+    	pass
 
     @_('if LPAREN cond RPAREN stmt end ELSE stmt end')
     def stmt(self, p):
-    	return p.IF,p.cond,p.stmt0,p.end,p.ELSE,p.stmt1,p.end
+    	pass
 
     @_('LBRACKET stmtlist RBRACKET')
     def stmt(self, p):
-        return  p.stmtlist 
+        pass
 
     @_('expr')
     def cond(self, p):
-        return p.expr
+        pass
 
     @_('WHILE')
     def whille(self, p):
-        return p.WHILE
+        pass
 
     @_('FOR')
     def forr(self, p):
-        return p.FOR
+        pass
 
     @_('VAR')
     def var(self, p):
-        return p.var
+        pass
 
 
     @_('expr')
     def cond(self, p):
-    	return p.expr
+    	pass
 
     @_('IF')
     def iff(self, p):
-    	return p.IF
+    	pass
 
     @_('empty')
     def begin(self, p):
@@ -184,19 +184,19 @@ class HocParser(Parser):
 
     @_('stmtlist "\n"')
     def stmtlist(self, p):
-    	return p.stmtlist
+    	pass
 
     @_('stmtlist stmt')
     def stmtlist(self, p):
-    	return p.stmtlist,p.stmt
+    	pass
 
     @_('INT')
     def type(self, p):
-    	return p.int 
+    	pass
 
     @_('FLOAT')
     def type(self, p):
-    	return p.float
+    	pass
 
     @_('NUMBER')
     def expr(self, p):
