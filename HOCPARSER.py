@@ -67,22 +67,18 @@ class HocParser(Parser):
 
     @_('VAR SUBEQ expr')
     def asgn(self, p):
-        p.VAR -= p.expr
-        rpass
+        pass
 
     @_('VAR MULEQ expr')
     def asgn(self, p):
-        p.VAR *= p.expr
         pass
 
     @_('VAR DIVEQ expr')
     def asgn(self, p):
-        p.VAR /= p.expr
         pass
 
     @_('VAR MODEQ expr')
     def asgn(self, p):
-        p.VAR %= p.expr
         pass
 
     @_('expr')
