@@ -7,7 +7,7 @@ class HOCLexer(Lexer):
     # Conjunto de palabras reservadas. Este conjunto enumera todos los
     # nombres especiales utilizados en el lenguaje
     keywords = { 'var','if','for','begin','while','end','else','print','const','read','retunrn',
-    'proc','arg','func','extern','return' }
+   'proc','arg','func','extern','return' }
 
     #--------------------------------------------------------------------------------
     # Conjunto de tokens. Este conjunto identifica la lista completa de
@@ -24,7 +24,7 @@ class HOCLexer(Lexer):
 
     # Operadores y delimitadores
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'EXP', 'MOD', 'ADDEQ', 'SUBEQ', 'DIVEQ', 'MODEQ', 'MULEQ',
-    'AND', 'OR', 'NOT', 'DEC', 'INC', 'UMINUS',
+    'AND', 'OR', 'NOT', 'DEC', 'INC',
 
     # Delimitadores y otros símbolos
     'ASSIGN','LPAREN','RPAREN','SEMI','COMMA',
@@ -124,7 +124,6 @@ class HOCLexer(Lexer):
     MODEQ = r'%='
     PLUS = r'\+'
     MINUS = r'-'
-    UMINUS = r'-'
     TIMES = r'\*'
     DIVIDE = r'/'
     EXP = r'\^'

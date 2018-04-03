@@ -155,11 +155,6 @@ class HocParser(Parser):
     def var(self, p):
         pass
 
-
-    @_('expr')
-    def cond(self, p):
-    	pass
-
     @_('IF')
     def iff(self, p):
     	pass
@@ -245,10 +240,6 @@ class HocParser(Parser):
     	pass
 
     @_('expr EXP expr')
-    def expr(self, p):
-    	pass
-
-    @_('MINUS expr' )
     def expr(self, p):
     	pass
 
