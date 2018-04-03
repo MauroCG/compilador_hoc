@@ -200,147 +200,145 @@ class HocParser(Parser):
 
     @_('NUMBER')
     def expr(self, p):
-    	return p.number
+    	pass
 
     @_('VAR')
     def expr(self, p):
-    	return p.var
+    	pass
 
     @_('asgn')
     def expr(self, p):
-    	return p.asgn
+    	pass
 
     @_('FUNCTION begin LPAREN arglist RPAREN')
     def expr(self, p):
-    	return p.function,p.begin,p.arglist
+    	pass
 
     @_('READ LPAREN VAR RPAREN ')
     def expr(self, p):
-    	return p.read,p.var
+    	pass
 
     @_('BLTIN LPAREN expr RPAREN' )
     def expr(self, p):
-    	return p.BLTIN,p.expr
+    	pass
 
     @_('LPAREN expr RPAREN	')
     def expr(self, p):
-    	return p.expr
+    	pass
 
     @_('MINUS expr %prec UMINUS')
     def expr(self,p):
-        return -p.expr
+        pass
 
     @_('expr PLUS expr')
     def expr(self, p):
-    	return p.expr0 + p.expr1
+    	pass
 
     @_('expr MINUS expr')
     def expr(self, p):
-    	return p.expr0 - p.expr1
+    	pass
 
     @_('expr TIMES expr')
     def expr(self, p):
-    	return p.expr0 * p.expr1
+    	pass
 
     @_('expr DIVIDE expr')
     def expr(self, p):
-    	return p.expr0 / p.expr1
+    	pass
 
     @_('expr MOD expr')
     def expr(self, p):
-    	return p.expr0 % p.expr1
+    	pass
 
     @_('expr EXP expr')
     def expr(self, p):
-    	return p.expr0 ^ p.expr1
+    	pass
 
     @_('MINUS expr' )
     def expr(self, p):
-    	return -p.expr
+    	pass
 
     @_('expr GT expr	')
     def expr(self, p):
-    	return p.expr0 > p.expr1
+    	pass
 
     @_('expr GE expr')
     def expr(self, p):
-    	return p.expr0 >= p.expr1
+    	pass
 
     @_('expr LT expr')
     def expr(self, p):
-    	return p.expr0 < p.expr1
+    	pass
 
     @_('expr LE expr')
     def expr(self, p):
-    	return p.expr0 <= p.expr1
+    	pass
 
     @_('expr EQ expr')
     def expr(self, p):
-    	return p.expr0 == p.expr1
+    	pass
 
     @_('expr NE expr')
     def expr(self, p):
-    	return p.expr0 != p.expr1
+    	pass
 
     @_('expr AND expr')
     def expr(self, p):
-    	return p.expr0 and p.expr1
+    	pass
 
     @_('expr OR expr')
     def expr(self, p):
-    	return p.expr0 | p.expr1
+    	pass
 
     @_('NOT expr')
     def expr(self, p):
-    	return not p.expr
+    	pass
 
     @_('INC VAR')
     def expr(self, p):
-    	return ++ p.var
+    	pass
 
     @_('DEC VAR')
     def expr(self, p):
-    	return -- p.var
+    	pass
 
     @_('VAR INC')
     def expr(self, p):
-        p.var += 1
-        return p.var
+        pass
 
     @_('VAR DEC)')
     def expr(self, p):
-        p.var -= 1
-        return p.var
+        pass
 
 
     @_('expr')
     def prlist(self, p):
-    	return p.expr
+    	pass
 
     @_('STRING')
     def prlist(self, p):
-    	return p.string
+    	pass
 
     @_('prlist COMMA expr')
     def prlist(self, p):
-    	return p.prlist,p.expr
+    	pass
 
     @_('prlist COMMA STRING')
     def prlist(self, p):
-    	return p.prlist,p.string
+    	pass
 
     @_('VAR type')
     def formals(self, p):
-    	return p.var,p.type
+    	pass
 
     @_('VAR COMMA formals')
     def formals(self, p):
-    	return p.var,p.formals
+    	pass
 
 
     @_('VAR')
     def procname(self, p):
-    	return p.var
+    	pass
 
     @_('empty')
     def arglist(self, p):
@@ -348,11 +346,11 @@ class HocParser(Parser):
 
     @_('expr')
     def arglist(self, p):
-    	return p.expr
+    	pass
 
     @_('arglist COMMA expr')
     def arglist(self, p):
-    	return p.arglist,p.expr
+    	pass
 
 if __name__ == '__main__':
     lexer = HOCLexer()
