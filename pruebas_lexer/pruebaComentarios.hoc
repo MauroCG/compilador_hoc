@@ -1,0 +1,12 @@
+12 //comentario de una sola linea
+/*
+esto
+es 
+un 
+comentario 
+multilinea
+*/
+x
+0x39 /* comentario 1 */ "hola" /* comentario 2 */ x // resto del comentario
+/* comentario sin terminar /* comentario valido */
+/* otro mal comentario // no se lee esto

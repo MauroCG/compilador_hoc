@@ -1,0 +1,1 @@
+Implementación de un compilador con python y la libreria sly, para una versión algo modificada del lenguaje de programación HOC que realizó UNIX. Esta versión de HOC además de las funciones de calculadora normal presenta declaración de tipos como int y float y algunos otros cambios.
