@@ -202,7 +202,7 @@ class HocParser(Parser):
 
     @_('ID')
     def expr(self, p):
-        return p.var
+        pass
 
     @_('asgn')
     def expr(self, p):
@@ -248,7 +248,7 @@ class HocParser(Parser):
     def expr(self, p):
         pass
 
-    @_('MINUS expr' )
+    @_('MINUS expr %prec UMINUS' )
     def expr(self, p):
         pass
 
