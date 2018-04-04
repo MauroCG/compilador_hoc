@@ -20,6 +20,9 @@ class HocParser(Parser):
     )
 
     
+    def __init__(self):
+        self.names = { }
+
     @_('')
     def empty(self,p):
         pass
@@ -28,27 +31,28 @@ class HocParser(Parser):
     def list(self, p):
         pass
 
-    @_('list "\n"')
+    @_('list ')
     def list(self, p):
         pass
 
-    @_('list defn "\n"')
+    '''@_('list defn ')
+    def list(self, p):
+        pass'''
+
+    @_('list asgn ')
     def list(self, p):
         pass
 
-    @_('list asgn "\n"')
+    @_('list stmt')
     def list(self, p):
         pass
 
-    @_('list stmt "\n"')
+    @_('list expr')
     def list(self, p):
         pass
 
-    @_('list expr "\n"')
-    def list(self, p):
-        pass
 
-    @_('ID "=" expr')
+    @_('ID ASSIGN expr')
     def asgn(self, p):
         pass
 
@@ -76,7 +80,11 @@ class HocParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('var ID type "=" NUMBER')
+    @_('var ID type ASSIGN INTEGER')
+    def stmt(self, p):
+        pass
+
+    @_('var ID type ASSIGN FLOAT')
     def stmt(self, p):
         pass
 
@@ -84,7 +92,7 @@ class HocParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('FUNC procname LPAREN formals RPAREN TYPE stmt')
+    @_('FUNC procname LPAREN formals RPAREN type stmt')
     def stmt(self, p):
         pass
 
@@ -92,7 +100,11 @@ class HocParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('const ID "=" NUMBER')
+    @_('CONST ID ASSIGN INTEGER')
+    def stmt(self, p):
+        pass
+
+    @_('CONST ID ASSIGN FLOAT')
     def stmt(self, p):
         pass
 
@@ -104,7 +116,7 @@ class HocParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('PROCEDURE begin LPAREN arglist RPAREN')
+    @_('PROC begin LPAREN arglist RPAREN')
     def stmt(self, p):
         pass
 
@@ -112,19 +124,19 @@ class HocParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('while LPAREN cond RPAREN stmt ')
+    @_('WHILE LPAREN cond RPAREN stmt ')
     def stmt(self, p):
         pass
 
-    @_('for LPAREN cond COMMA cond COMMA cond RPAREN stmt end')
+    @_('FOR LPAREN cond COMMA cond COMMA cond RPAREN stmt end')
     def stmt(self, p):
         pass
 
-    @_('if LPAREN cond RPAREN stmt end ')
+    @_('IF LPAREN cond RPAREN stmt end ')
     def stmt(self, p):
         pass
 
-    @_('if LPAREN cond RPAREN stmt end ELSE stmt end')
+    @_('IF LPAREN cond RPAREN stmt end ELSE stmt end')
     def stmt(self, p):
         pass
 
@@ -137,11 +149,11 @@ class HocParser(Parser):
         pass
 
     @_('WHILE')
-    def whille(self, p):
+    def WHILE_STM(self, p):
         pass
 
     @_('FOR')
-    def forr(self, p):
+    def FOR_STM(self, p):
         pass
 
     @_('ID')
@@ -149,7 +161,7 @@ class HocParser(Parser):
         pass
 
     @_('IF')
-    def iff(self, p):
+    def IF_STM(self, p):
         pass
 
     @_('empty')
@@ -164,7 +176,7 @@ class HocParser(Parser):
     def stmtlist(self, p):
         pass
 
-    @_('stmtlist "\n"')
+    @_('stmtlist ')
     def stmtlist(self, p):
         pass
 
@@ -172,7 +184,7 @@ class HocParser(Parser):
     def stmtlist(self, p):
         pass
 
-    @_('INT')
+    @_('INTEGER')
     def type(self, p):
         pass
 
@@ -180,9 +192,13 @@ class HocParser(Parser):
     def type(self, p):
         pass
 
-    @_('NUMBER')
+    @_('INTEGER')
     def expr(self, p):
-        return p.number
+        pass
+
+    @_('FLOAT')
+    def expr(self, p):
+        pass
 
     @_('ID')
     def expr(self, p):
@@ -190,142 +206,134 @@ class HocParser(Parser):
 
     @_('asgn')
     def expr(self, p):
-        return p.asgn
+        pass
 
-    @_('FUNCTION begin LPAREN arglist RPAREN')
+    @_('FUNC begin LPAREN arglist RPAREN')
     def expr(self, p):
-        return p.function,p.begin,p.arglist
+        pass
 
     @_('READ LPAREN ID RPAREN ')
     def expr(self, p):
-        return p.read,p.var
+        pass
 
-    @_('BLTIN LPAREN expr RPAREN' )
+    '''@_('BLTIN LPAREN expr RPAREN' )
     def expr(self, p):
-        return p.BLTIN,p.expr
+        pass'''
 
     @_('LPAREN expr RPAREN  ')
     def expr(self, p):
-        return p.expr
-
-    @_('MINUS expr %prec UMINUS')
-    def expr(self,p):
-        return -p.expr
+        pass
 
     @_('expr PLUS expr')
     def expr(self, p):
-        return p.expr0 + p.expr1
+        pass
 
     @_('expr MINUS expr')
     def expr(self, p):
-        return p.expr0 - p.expr1
+        pass
 
     @_('expr TIMES expr')
     def expr(self, p):
-        return p.expr0 * p.expr1
+        pass
 
     @_('expr DIVIDE expr')
     def expr(self, p):
-        return p.expr0 / p.expr1
+        pass
 
     @_('expr MOD expr')
     def expr(self, p):
-        return p.expr0 % p.expr1
+        pass
 
     @_('expr EXP expr')
     def expr(self, p):
-        return p.expr0 ^ p.expr1
-
-
-    @_('expr GT expr	')
+        pass
 
     @_('MINUS expr' )
     def expr(self, p):
-        return -p.expr
+        pass
 
     @_('expr GT expr    ')
     def expr(self, p):
-        return p.expr0 > p.expr1
+        pass
 
     @_('expr GE expr')
     def expr(self, p):
-        return p.expr0 >= p.expr1
+        pass
 
     @_('expr LT expr')
     def expr(self, p):
-        return p.expr0 < p.expr1
+        pass
 
     @_('expr LE expr')
     def expr(self, p):
-        return p.expr0 <= p.expr1
+        pass
 
     @_('expr EQ expr')
     def expr(self, p):
-        return p.expr0 == p.expr1
+        pass
 
     @_('expr NE expr')
     def expr(self, p):
-        return p.expr0 != p.expr1
+        pass
 
     @_('expr AND expr')
     def expr(self, p):
-        return p.expr0 and p.expr1
+        pass
 
     @_('expr OR expr')
     def expr(self, p):
-        return p.expr0 | p.expr1
+        pass
 
     @_('NOT expr')
     def expr(self, p):
-        return not p.expr
+        pass
 
     @_('INC ID')
     def expr(self, p):
-        return ++ p.var
+        pass
 
     @_('DEC ID')
     def expr(self, p):
-        return -- p.var
+        pass
 
     @_('ID INC')
     def expr(self, p):
         p.var += 1
-        return p.var
+        pass
 
     @_('ID DEC LPAREN')
     def expr(self, p):
-        p.var -= 1
-        return p.var
+        pass
 
 
     @_('expr')
     def prlist(self, p):
-        return p.expr
+        pass
 
     @_('STRING')
     def prlist(self, p):
-        return p.string
+        pass
 
     @_('prlist COMMA expr')
     def prlist(self, p):
-        return p.prlist,p.expr
+        pass
 
     @_('prlist COMMA STRING')
     def prlist(self, p):
-        return p.prlist,p.string
+        pass
 
     @_('ID type')
     def formals(self, p):
-        return p.var,p.type
+        pass
 
     @_('ID COMMA formals')
     def formals(self, p):
-        return p.var,p.formals
+        pass
 
 
     @_('ID')
     def procname(self, p):
-        return p.var
+        pass
 
     @_('empty')
     def arglist(self, p):
@@ -333,15 +341,15 @@ class HocParser(Parser):
 
     @_('expr')
     def arglist(self, p):
-        return p.expr
+        pass
 
     @_('arglist COMMA expr')
     def arglist(self, p):
-        return p.arglist,p.expr
+        pass
 
 if __name__ == '__main__':
     lexer = HOCLexer()
-    parser = HOCParser()
+    parser = HocParser()
     while True:
         try:
             text = input('calc > ')
@@ -349,5 +357,4 @@ if __name__ == '__main__':
             print(result)
         except EOFError:
             break
-
 
