@@ -18,9 +18,11 @@ class HOCLexer(Lexer):
     * {kw.upper() for kw in keywords},
     # Identificadores
     'ID',
+        
+    'FUNCTION','PROCEDURE','NUMFLOAT','INT',
 
     # Literales
-    'INTEGER', 'FLOAT', 'STRING', 
+    'INTEGER', 'FLOAT', 'STRING','NEWLINE', 
 
     # Operadores y delimitadores
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'EXP', 'MOD', 'ADDEQ', 'SUBEQ', 'DIVEQ', 'MODEQ', 'MULEQ',
@@ -159,9 +161,13 @@ class HOCLexer(Lexer):
 
 
     # Ignore nueva linea
-    @_(r'\n+')
+    '''@_(r'\n+')
     def ignore_newline(self,t):
-        self.lineno += t.value.count('\n')
+        self.lineno += t.value.count('\n')'''
+    
+    @_(r'\n')
+    def NEWLINE(self,t):
+        pass
 
     #----------------------------------------------------------------------
     # Manejo de errores de caracteres incorrectos
