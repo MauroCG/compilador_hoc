@@ -236,15 +236,14 @@ class HocParser(Parser):
     def expr(self, p):
         return p.expr0 ^ p.expr1
 
-<<<<<<< HEAD
+
     @_('expr GT expr	')
-=======
+
     @_('MINUS expr' )
     def expr(self, p):
         return -p.expr
 
     @_('expr GT expr    ')
->>>>>>> origin/master
     def expr(self, p):
         return p.expr0 > p.expr1
 
