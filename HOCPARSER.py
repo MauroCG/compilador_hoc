@@ -20,9 +20,6 @@ class HocParser(Parser):
     )
 
     
-    def __init__(self):
-        self.names = { }
-
     @_('')
     def empty(self,p):
         pass
@@ -48,10 +45,6 @@ class HocParser(Parser):
         pass
 
     @_('list expr "\n"')
-    def list(self, p):
-        pass
-
-    @_('list error "\n"')
     def list(self, p):
         pass
 
