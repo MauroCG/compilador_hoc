@@ -1,0 +1,107 @@
+%%
+list:	  /* nothing */
+	| list '\n'
+	| list defn '\n'
+	| list asgn '\n' 
+	| list stmt '\n'  
+	| list expr '\n'  
+	| list error '\n' 
+	;
+asgn:	  VAR '=' expr 
+	| VAR ADDEQ expr	
+	| VAR SUBEQ expr	
+	| VAR MULEQ expr	
+	| VAR DIVEQ expr	
+	| VAR MODEQ expr
+	;
+
+stmt:	  expr
+	#definicion de variables y constantes
+	| 'var' VAR type '=' NUMBER
+	| 'var' VAR type
+	| FUNC procname '(' formals ')' type stmt
+	| PROC procname '(' formals ')' stmt
+	| 'const' VAR '=' NUMBER
+	| RETURN 
+	| RETURN expr        
+	| PROCEDURE begin '(' arglist ')'
+	| PRINT prlist	
+	| while '(' cond ')' stmt 
+	| for '(' cond ';' cond ';' cond ')' stmt end 
+	| if '(' cond ')' stmt end 
+	| if '(' cond ')' stmt end ELSE stmt end
+	| '{' stmtlist '}'	
+	;
+cond:	   expr 	
+	;
+while:	  WHILE	
+	;
+for:	  FOR	
+	;
+var:	VAR
+	;
+if:	  IF	
+	;
+begin:	  /* nothing */		
+	;
+end:	  /* nothing */		
+	;
+stmtlist: /* nothing */		
+	| stmtlist '\n'
+	| stmtlist stmt
+	;
+
+type: 	  INT
+	| FLOAT
+	;
+
+expr:	  INTEGER
+	| NUMFLOAT 
+	| VAR	
+	| asgn
+	| FUNCTION begin '(' arglist ')'	
+	| READ '(' VAR ')' 
+	| BLTIN '(' expr ')' 
+	| '(' expr ')'	
+	| expr '+' expr	
+	| expr '-' expr	
+	| expr '*' expr	
+	| expr '/' expr	
+	| expr '%' expr	
+	| expr '^' expr	
+	| '-' expr   
+	| expr GT expr	
+	| expr GE expr	
+	| expr LT expr	
+	| expr LE expr	
+	| expr EQ expr	
+	| expr NE expr
+	| expr AND expr	
+	| expr OR expr	
+	| NOT expr	
+	| INC VAR	
+	| DEC VAR	
+	| VAR INC	
+	| VAR DEC	
+	;
+	
+prlist:	  expr			
+	| STRING		
+	| prlist ',' expr	
+	| prlist ',' STRING	
+	;
+defn: 
+	;
+formals:	
+	| VAR	type
+	| VAR ',' formals	
+	;
+procname: VAR
+	| FUNCTION
+	| PROCEDURE
+	;
+arglist:  /* nothing */ 	
+	| expr			
+	| arglist ',' expr	
+	;
+%%

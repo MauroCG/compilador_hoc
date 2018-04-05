@@ -19,10 +19,6 @@ class HocParser(Parser):
         ('right','EXP')
     )
 
-    
-    def __init__(self):
-        self.names = { }
-
     @_('')
     def empty(self,p):
         pass
@@ -31,7 +27,7 @@ class HocParser(Parser):
     def list(self, p):
         pass
 
-    @_('list ')
+    @_('list')
     def list(self, p):
         pass
 
@@ -39,7 +35,7 @@ class HocParser(Parser):
     def list(self, p):
         pass'''
 
-    @_('list asgn ')
+    @_('list asgn')
     def list(self, p):
         pass
 
@@ -84,7 +80,7 @@ class HocParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('var ID type ASSIGN FLOAT')
+    @_('var ID type ASSIGN NUMFLOAT')
     def stmt(self, p):
         pass
 
@@ -104,7 +100,7 @@ class HocParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('CONST ID ASSIGN FLOAT')
+    @_('CONST ID ASSIGN NUMFLOAT')
     def stmt(self, p):
         pass
 
@@ -184,7 +180,7 @@ class HocParser(Parser):
     def stmtlist(self, p):
         pass
 
-    @_('INTEGER')
+    @_('INT')
     def type(self, p):
         pass
 
@@ -196,7 +192,7 @@ class HocParser(Parser):
     def expr(self, p):
         pass
 
-    @_('FLOAT')
+    @_('NUMFLOAT')
     def expr(self, p):
         pass
 

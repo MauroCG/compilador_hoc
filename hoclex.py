@@ -6,8 +6,8 @@ class HOCLexer(Lexer):
     #-------------------------------------------------------------------------------
     # Conjunto de palabras reservadas. Este conjunto enumera todos los
     # nombres especiales utilizados en el lenguaje
-    keywords = { 'var','if','for','begin','while','end','else','print','const','read','retunrn',
-   'proc', 'procedure','arg','func', 'function','extern','return' }
+    keywords = { 'var','if','for','begin','while','end','else','print','const','read',
+   'proc', 'procedure','arg','func', 'function','extern','return', 'int', 'float' }
 
     #--------------------------------------------------------------------------------
     # Conjunto de tokens. Este conjunto identifica la lista completa de
@@ -20,7 +20,7 @@ class HOCLexer(Lexer):
     'ID',
 
     # Literales
-    'INTEGER', 'FLOAT', 'STRING', 
+    'INTEGER', 'NUMFLOAT', 'STRING', 
 
     # Operadores y delimitadores
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'EXP', 'MOD', 'ADDEQ', 'SUBEQ', 'DIVEQ', 'MODEQ', 'MULEQ',
@@ -68,7 +68,7 @@ class HOCLexer(Lexer):
 
     # El valor es convertido a un float de Python cuando se lee
     @_(r'[1-9]+(\.[1-9]+[eE][+-]?|[eE])[1-9]\d*|(0|[1-9]\d*)?\.(\d*[1-9]|0)|(0|[1-9]\d*)\.(\d*[1-9]|0)?')
-    def FLOAT(self,t):
+    def NUMFLOAT(self,t):
         t.value=float(t.value)
         return t
 
