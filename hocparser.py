@@ -57,7 +57,7 @@ class HOCParser(Parser):
     def asgn(self,p):
         pass
 
-    '''@_('ID ADDEQ expr')
+    @_('ID ADDEQ expr')
     def asgn(self, p):
         pass
 
@@ -75,11 +75,11 @@ class HOCParser(Parser):
 
     @_('ID MODEQ expr')
     def asgn(self, p):
-        pass'''
+        pass
 
     '''@_('expr')
     def stmt(self, p):
-        pass
+        pass'''
 
     @_('var ID type ASSIGN INTEGER')
     def stmt(self, p):
@@ -107,7 +107,7 @@ class HOCParser(Parser):
 
     @_('CONST ID ASSIGN FLOAT')
     def stmt(self, p):
-        pass'''
+        pass
 
     @_('RETURN')
     def stmt(self, p):
@@ -128,6 +128,7 @@ class HOCParser(Parser):
     '''@_('WHILE LPAREN cond RPAREN stmt ')
     def stmt(self, p):
         pass'''
+
     @_('WHILE_STM cond stmt end')
     def stmt(self,p):
         pass
@@ -143,6 +144,7 @@ class HOCParser(Parser):
     @_('IF LPAREN cond RPAREN stmt end ELSE stmt end')
     def stmt(self, p):
         pass'''
+
     @_('if_stm cond stmt end')
     def stmt(self,p):
         pass
@@ -198,13 +200,13 @@ class HOCParser(Parser):
     def stmtlist(self, p):
         pass
 
-    '''@_('INTEGER')
+    @_('INTEGER')
     def type(self, p):
         pass
 
     @_('FLOAT')
     def type(self, p):
-        pass'''
+        pass
 
     @_('INTEGER')
     def expr(self, p):
@@ -340,13 +342,13 @@ class HOCParser(Parser):
     def prlist(self, p):
         pass
 
-    '''@_('ID type')
+    @_('ID type')
     def formals(self, p):
         pass
 
     @_('ID COMMA formals')
     def formals(self, p):
-        pass'''
+        pass
 
     @_('FUNC procname')
     def defn(self,p):
@@ -387,6 +389,14 @@ class HOCParser(Parser):
 
     @_('')
     def empty(self,p):
+        pass
+
+    @_('ID list')
+    def var(self, p):
+        pass
+
+    @_('ID')
+    def id(self, p):
         pass
 
 if __name__ == '__main__':
