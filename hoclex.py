@@ -6,8 +6,8 @@ class HOCLexer(Lexer):
     #-------------------------------------------------------------------------------
     # Conjunto de palabras reservadas. Este conjunto enumera todos los
     # nombres especiales utilizados en el lenguaje
-    keywords = { 'var','if','for','begin','while','end','else','print','const','read',
-   'proc', 'procedure','arg','func', 'function','extern','return', 'int', 'float' }
+    keywords = { 'var','if','for','begin','while','end','else','print','const','read','retunrn',
+    'proc','arg','func','extern','return' }
 
     #--------------------------------------------------------------------------------
     # Conjunto de tokens. Este conjunto identifica la lista completa de
@@ -18,23 +18,19 @@ class HOCLexer(Lexer):
     * {kw.upper() for kw in keywords},
     # Identificadores
     'ID',
-        
+
     'FUNCTION','PROCEDURE','NUMFLOAT','INT',
 
     # Literales
-<<<<<<< HEAD
-    'INTEGER', 'NUMFLOAT', 'STRING', 
-=======
-    'INTEGER', 'FLOAT', 'STRING','NEWLINE', 
->>>>>>> af7be065d5db622c5ffe0add5f0193485a2e72f2
+    'INTEGER', 'FLOAT', 'STRING', 'NEWLINE',
 
     # Operadores y delimitadores
-    'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'EXP', 'MOD', 'ADDEQ', 'SUBEQ', 'DIVEQ', 'MODEQ', 'MULEQ',
+    'EXP','PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD', 'ADDEQ', 'SUBEQ', 'DIVEQ', 'MODEQ', 'MULEQ',
     'AND', 'OR', 'NOT', 'DEC', 'INC',
 
     # Delimitadores y otros símbolos
     'ASSIGN','LPAREN','RPAREN','SEMI','COMMA',
-    'LBRACE','RBRACE','LBRACKET','RBRACKET','WR_ESCP_STR','GT','GE','LT','LE','EQ','NE'
+    'LBRACE','RBRACE','LBRACKET','RBRACKET','GT','GE','LT','LE','EQ','NE'
     }
 
 
@@ -74,7 +70,7 @@ class HOCLexer(Lexer):
 
     # El valor es convertido a un float de Python cuando se lee
     @_(r'[1-9]+(\.[1-9]+[eE][+-]?|[eE])[1-9]\d*|(0|[1-9]\d*)?\.(\d*[1-9]|0)|(0|[1-9]\d*)\.(\d*[1-9]|0)?')
-    def NUMFLOAT(self,t):
+    def FLOAT(self,t):
         t.value=float(t.value)
         return t
 
@@ -121,6 +117,7 @@ class HOCLexer(Lexer):
 
     # Regular expression rules for tokens
 
+    EXP=r'\^'
     INC = r'\+\+'
     DEC = r'--'
     ADDEQ = r'\+='
@@ -132,7 +129,6 @@ class HOCLexer(Lexer):
     MINUS = r'-'
     TIMES = r'\*'
     DIVIDE = r'/'
-    EXP = r'\^'
     MOD = r'%'
     EQ = r'=='
     GE = r'>='
@@ -168,7 +164,6 @@ class HOCLexer(Lexer):
     '''@_(r'\n+')
     def ignore_newline(self,t):
         self.lineno += t.value.count('\n')'''
-    
     @_(r'\n')
     def NEWLINE(self,t):
         pass

@@ -16,27 +16,16 @@ class HOCParser(Parser):
         ('left','GT','GE','LT','LE','EQ','NE'),
         ('left','PLUS','MINUS'),
         ('left','TIMES','DIVIDE'),
-        #('left','LPAREN','RPAREN'),
         ('left','NOT'),
+        #('left','LPAREN','RPAREN'),
         ('right','EXP')
     )
 
-<<<<<<< HEAD
-    @_('')
-    def empty(self,p):
-        pass
-
-=======
->>>>>>> af7be065d5db622c5ffe0add5f0193485a2e72f2
     @_('empty')
     def list(self, p):
         pass
 
-<<<<<<< HEAD
-    @_('list')
-=======
     @_('list NEWLINE')
->>>>>>> af7be065d5db622c5ffe0add5f0193485a2e72f2
     def list(self, p):
         pass
 
@@ -44,11 +33,7 @@ class HOCParser(Parser):
     def list(self, p):
         pass
 
-<<<<<<< HEAD
-    @_('list asgn')
-=======
     @_('list asgn NEWLINE')
->>>>>>> af7be065d5db622c5ffe0add5f0193485a2e72f2
     def list(self, p):
         pass
 
@@ -59,19 +44,18 @@ class HOCParser(Parser):
     @_('list expr NEWLINE')
     def list(self, p):
         pass
-    
+
     @_('list error NEWLINE')
     def list (self,p):
-    	pass
-
+        pass
 
     @_('VAR ASSIGN expr')
     def asgn(self, p):
         pass
-    
+
     @_('ARG ASSIGN expr')
     def asgn(self,p):
-    	pass
+        pass
 
     '''@_('ID ADDEQ expr')
     def asgn(self, p):
@@ -93,15 +77,15 @@ class HOCParser(Parser):
     def asgn(self, p):
         pass'''
 
-    @_('expr')
+    '''@_('expr')
     def stmt(self, p):
         pass
 
-    '''@_('var ID type ASSIGN INTEGER')
+    @_('var ID type ASSIGN INTEGER')
     def stmt(self, p):
         pass
 
-    @_('var ID type ASSIGN NUMFLOAT')
+    @_('var ID type ASSIGN FLOAT')
     def stmt(self, p):
         pass
 
@@ -121,7 +105,7 @@ class HOCParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('CONST ID ASSIGN NUMFLOAT')
+    @_('CONST ID ASSIGN FLOAT')
     def stmt(self, p):
         pass'''
 
@@ -133,10 +117,6 @@ class HOCParser(Parser):
     def stmt(self, p):
         pass
 
-    '''@_('PROC begin LPAREN arglist RPAREN')
-    def stmt(self, p):
-        pass'''
-    
     @_('PROCEDURE begin LPAREN arglist RPAREN')
     def stmt(self, p):
         pass
@@ -148,12 +128,11 @@ class HOCParser(Parser):
     '''@_('WHILE LPAREN cond RPAREN stmt ')
     def stmt(self, p):
         pass'''
-    
     @_('WHILE_STM cond stmt end')
     def stmt(self,p):
-    	pass
+        pass
 
-    '''@_('FOR LPAREN cond COMMA cond COMMA cond RPAREN stmt end')
+    ''''@_('FOR LPAREN cond COMMA cond COMMA cond RPAREN stmt end')
     def stmt(self, p):
         pass
 
@@ -164,14 +143,13 @@ class HOCParser(Parser):
     @_('IF LPAREN cond RPAREN stmt end ELSE stmt end')
     def stmt(self, p):
         pass'''
-    
     @_('if_stm cond stmt end')
     def stmt(self,p):
-    	pass
+        pass
 
-    @_('if_stm cond stmt end ELSE stmt end')
+    '''@_('if_stm cond stmt end ELSE stmt end')
     def stmt(self,p):
-    	pass
+        pass'''
 
     @_('LBRACKET stmtlist RBRACKET')
     def stmt(self, p):
@@ -180,18 +158,16 @@ class HOCParser(Parser):
     '''@_('expr')
     def cond(self, p):
         pass'''
-    
     @_('LPAREN expr RPAREN')
     def cond(self, p):
         pass
-    
 
     @_('WHILE')
-    def WHILE_STM(self, p):
+    def WHILE_STM (self, p):
         pass
 
-    ''''FOR')
-    def FOR_STM(self, p):
+    '''@_('FOR')
+    def FOR (self, p):
         pass
 
     @_('ID')
@@ -222,11 +198,7 @@ class HOCParser(Parser):
     def stmtlist(self, p):
         pass
 
-<<<<<<< HEAD
-    @_('INT')
-=======
     '''@_('INTEGER')
->>>>>>> af7be065d5db622c5ffe0add5f0193485a2e72f2
     def type(self, p):
         pass
 
@@ -238,30 +210,22 @@ class HOCParser(Parser):
     def expr(self, p):
         pass
 
-    @_('NUMFLOAT')
+    @_('FLOAT')
     def expr(self, p):
         pass
 
-    '''@_('ID')
-    def expr(self, p):
-        pass'''
-    
     @_('VAR')
     def expr(self, p):
         pass
 
-    @_('asgn')
-    def expr(self, p):
-        pass
-    
-    @_('ARG')
-    def expr(self,p):
-    	pass
-
-    '''@_('FUNC begin LPAREN arglist RPAREN')
+    '''@_('asgn')
     def expr(self, p):
         pass'''
-    
+
+    @_('ARG')
+    def expr(self,p):
+        pass
+
     @_('FUNCTION begin LPAREN arglist RPAREN')
     def expr(self, p):
         pass
@@ -274,7 +238,7 @@ class HOCParser(Parser):
     def expr(self, p):
         pass'''
 
-    @_('LPAREN expr RPAREN  ')
+    @_('LPAREN expr RPAREN')
     def expr(self, p):
         pass
 
@@ -302,7 +266,7 @@ class HOCParser(Parser):
     def expr(self, p):
         pass
 
-    @_('MINUS expr' )
+    @_('MINUS expr')
     def expr(self, p):
         pass
 
@@ -384,18 +348,30 @@ class HOCParser(Parser):
     def formals(self, p):
         pass'''
 
+    @_('FUNC procname')
+    def defn(self,p):
+        pass
+
+    @_('PROC procname')
+    def defn(self,p):
+        pass
+
 
     @_('ID')
     def procname(self, p):
         pass
-    
+
     @_('FUNCTION')
     def procname(self,p):
-    	pass
+        pass
 
     @_('PROCEDURE')
     def procname(self,p):
-    	pass
+        pass
+
+
+
+
 
     @_('empty')
     def arglist(self, p):
@@ -408,14 +384,14 @@ class HOCParser(Parser):
     @_('arglist COMMA expr')
     def arglist(self, p):
         pass
-    
+
     @_('')
     def empty(self,p):
         pass
 
 if __name__ == '__main__':
     lexer = HOCLexer()
-    parser = HocParser()
+    parser = HOCParser()
     while True:
         try:
             text = input('calc > ')
