@@ -1,5 +1,6 @@
 from sly import Parser
 from hoclex import HOCLexer
+from hocAST import *
 
 class HOCParser(Parser):
 
@@ -10,20 +11,20 @@ class HOCParser(Parser):
         ('right','ASSIGN'),
         ('left','OR'),
         ('left','AND'),
-        #('left','EQ','NE'),
-        #('left','LT','LE'),
-        #('left','GT','GE'),
-        ('left','GT','GE','LT','LE','EQ','NE'),
+        ('left','EQ','NE'),
+        ('left','LT','LE'),
+        ('left','GT','GE'),
+        #('left','GT','GE','LT','LE','EQ','NE'),
         ('left','PLUS','MINUS'),
-        ('left','TIMES','DIVIDE'),
+        ('left','TIMES','DIVIDE','MOD'),
         ('left','NOT'),
-        #('left','LPAREN','RPAREN'),
+        ('left','LPAREN','RPAREN'),
         ('right','EXP')
     )
 
     @_('empty')
     def list(self, p):
-        pass
+        return Empty()
 
     @_('list NEWLINE')
     def list(self, p):
@@ -49,7 +50,7 @@ class HOCParser(Parser):
     def list (self,p):
         pass
 
-    @_('VAR ASSIGN expr')
+    @_('ID ASSIGN expr')
     def asgn(self, p):
         pass
 
@@ -125,15 +126,11 @@ class HOCParser(Parser):
     def stmt(self, p):
         pass
 
-    '''@_('WHILE LPAREN cond RPAREN stmt ')
-    def stmt(self, p):
-        pass'''
-
-    @_('WHILE_STM cond stmt end')
+    @_('WHILE_STM LPAREN cond RPAREN stmt')
     def stmt(self,p):
         pass
 
-    ''''@_('FOR LPAREN cond COMMA cond COMMA cond RPAREN stmt end')
+    @_('FOR LPAREN cond COMMA cond COMMA cond RPAREN stmt end')
     def stmt(self, p):
         pass
 
@@ -141,25 +138,18 @@ class HOCParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('IF LPAREN cond RPAREN stmt end ELSE stmt end')
+    @_('IF LPAREN cond RPAREN stmt end ELSE_STM stmt end')
     def stmt(self, p):
-        pass'''
+        pass
 
     @_('if_stm cond stmt end')
     def stmt(self,p):
         pass
 
-    '''@_('if_stm cond stmt end ELSE stmt end')
-    def stmt(self,p):
-        pass'''
-
     @_('LBRACKET stmtlist RBRACKET')
     def stmt(self, p):
         pass
 
-    '''@_('expr')
-    def cond(self, p):
-        pass'''
     @_('LPAREN expr RPAREN')
     def cond(self, p):
         pass
@@ -168,12 +158,12 @@ class HOCParser(Parser):
     def WHILE_STM (self, p):
         pass
 
-    '''@_('FOR')
-    def FOR (self, p):
+    @_('ELSE')
+    def ELSE_STM (self,p):
         pass
 
-    @_('ID')
-    def var(self, p):
+    '''@_('FOR')
+    def FOR (self, p):
         pass'''
 
     @_('IF')
@@ -182,15 +172,15 @@ class HOCParser(Parser):
 
     @_('empty')
     def begin(self, p):
-        pass
+        return Empty()
 
     @_('empty')
     def end(self, p):
-        pass
+        return Empty()
 
     @_('empty')
     def stmtlist(self, p):
-        pass
+        return Empty()
 
     @_('stmtlist NEWLINE')
     def stmtlist(self, p):
@@ -200,11 +190,11 @@ class HOCParser(Parser):
     def stmtlist(self, p):
         pass
 
-    @_('INTEGER')
+    @_('INT')
     def type(self, p):
         pass
 
-    @_('FLOAT')
+    @_('NUMFLOAT')
     def type(self, p):
         pass
 
@@ -219,6 +209,7 @@ class HOCParser(Parser):
     @_('VAR')
     def expr(self, p):
         pass
+
 
     '''@_('asgn')
     def expr(self, p):
@@ -236,9 +227,9 @@ class HOCParser(Parser):
     def expr(self, p):
         pass
 
-    '''@_('BLTIN LPAREN expr RPAREN' )
+    @_('BLTIN LPAREN expr RPAREN' )
     def expr(self, p):
-        pass'''
+        pass
 
     @_('LPAREN expr RPAREN')
     def expr(self, p):
@@ -246,27 +237,27 @@ class HOCParser(Parser):
 
     @_('expr PLUS expr')
     def expr(self, p):
-        pass
+        return BinaryOp(p[1], p[0], p[2])
 
     @_('expr MINUS expr')
     def expr(self, p):
-        pass
+        return BinaryOp(p[1], p[0], p[2])
 
     @_('expr TIMES expr')
     def expr(self, p):
-        pass
+        return BinaryOp(p[1], p[0], p[2])
 
     @_('expr DIVIDE expr')
     def expr(self, p):
-        pass
+        return BinaryOp(p[1], p[0], p[2])
 
-    '''@_('expr MOD expr')
+    @_('expr MOD expr')
     def expr(self, p):
-        pass'''
+        return BinaryOp(p[1], p[0], p[2])
 
     @_('expr EXP expr')
     def expr(self, p):
-        pass
+        return BinaryOp(p[1], p[0], p[2])
 
     @_('MINUS expr')
     def expr(self, p):
@@ -274,57 +265,55 @@ class HOCParser(Parser):
 
     @_('expr GT expr')
     def expr(self, p):
-        pass
+        return RelationalOp(p[1], p[0], p[2])
 
     @_('expr GE expr')
     def expr(self, p):
-        pass
+        return RelationalOp(p[1], p[0], p[2])
 
     @_('expr LT expr')
     def expr(self, p):
-        pass
+        return RelationalOp(p[1], p[0], p[2])
 
     @_('expr LE expr')
     def expr(self, p):
-        pass
+        return RelationalOp(p[1], p[0], p[2])
 
     @_('expr EQ expr')
     def expr(self, p):
-        pass
+        return RelationalOp(p[1], p[0], p[2])
 
     @_('expr NE expr')
     def expr(self, p):
-        pass
+        return RelationalOp(p[1], p[0], p[2])
 
     @_('expr AND expr')
     def expr(self, p):
-        pass
+        return LogicalOp(p[1], p[0], p[2])
 
     @_('expr OR expr')
     def expr(self, p):
-        pass
+        return LogicalOp(p[1], p[0], p[2])
 
     @_('NOT expr')
     def expr(self, p):
-        pass
+        return UnaryOp(p[0], p[1])
 
-    '''@_('INC ID')
+    @_('INC ID')
     def expr(self, p):
-        pass
+        return UnaryOp(p[0], p[1])
 
     @_('DEC ID')
     def expr(self, p):
-        pass
+        return UnaryOp(p[0], p[1])
 
     @_('ID INC')
     def expr(self, p):
-        p.var += 1
-        pass
+        return UnaryOp(p[1], p[0])
 
-    @_('ID DEC LPAREN')
+    @_('ID DEC')
     def expr(self, p):
-        pass'''
-
+        return UnaryOp(p[1], p[0])
 
     @_('expr')
     def prlist(self, p):
@@ -371,13 +360,9 @@ class HOCParser(Parser):
     def procname(self,p):
         pass
 
-
-
-
-
     @_('empty')
     def arglist(self, p):
-        pass
+        return Empty()
 
     @_('expr')
     def arglist(self, p):
@@ -395,10 +380,6 @@ class HOCParser(Parser):
     def var(self, p):
         pass
 
-    @_('ID')
-    def id(self, p):
-        pass
-
 if __name__ == '__main__':
     lexer = HOCLexer()
     parser = HOCParser()
@@ -409,4 +390,3 @@ if __name__ == '__main__':
             print(result)
         except EOFError:
             break
-

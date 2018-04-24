@@ -6,8 +6,8 @@ class HOCLexer(Lexer):
     #-------------------------------------------------------------------------------
     # Conjunto de palabras reservadas. Este conjunto enumera todos los
     # nombres especiales utilizados en el lenguaje
-    keywords = { 'var','if','for','begin','while','end','else','print','const','read','retunrn',
-    'proc','arg','func','extern','return' }
+    keywords = { 'var','if','for','begin','while','end','else','print','const','read',
+    'proc','arg','func','extern','return', 'bltin' }
 
     #--------------------------------------------------------------------------------
     # Conjunto de tokens. Este conjunto identifica la lista completa de

@@ -151,6 +151,9 @@ class Empty(AST):
 # BinaryOperator, UnaryOperator, ConstDeclaration, VarDeclaration,
 # AssignmentStatement, etc...
 
+class LogicalOp(AST):
+        _fields = ['op', 'left', 'right']
+
 # ----------------------------------------------------------------------
 #                  NO MODIFIQUE NADA AQUI ABAJO
 # ----------------------------------------------------------------------
