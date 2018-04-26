@@ -195,7 +195,7 @@ class HOCParser(Parser):
     def type(self, p):
         pass
 
-    @_('NUMFLOAT')
+    @_('FLOAT')
     def type(self, p):
         pass
 
@@ -203,11 +203,11 @@ class HOCParser(Parser):
     def expr(self, p):
         pass
 
-    @_('FLOAT')
+    @_('NUMFLOAT')
     def expr(self, p):
         pass
 
-    @_('VAR')
+    @_('ID')
     def expr(self, p):
         pass
 
@@ -377,7 +377,7 @@ class HOCParser(Parser):
     def empty(self,p):
         pass
 
-    @_('ID list')
+    @_('VAR')
     def var(self, p):
         pass
 
