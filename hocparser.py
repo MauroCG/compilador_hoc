@@ -17,6 +17,7 @@ class HOCParser(Parser):
         #('left','GT','GE','LT','LE','EQ','NE'),
         ('left','PLUS','MINUS'),
         ('left','TIMES','DIVIDE','MOD'),
+        ('right', 'UMINUS'),
         ('left','NOT'),
         ('left','LPAREN','RPAREN'),
         ('right','EXP')
@@ -259,9 +260,9 @@ class HOCParser(Parser):
     def expr(self, p):
         return BinaryOp(p[1], p[0], p[2])
 
-    @_('MINUS expr')
+    @_('MINUS expr %prec UMINUS')
     def expr(self, p):
-        pass
+        return UnaryOp(p[0], p[1])
 
     @_('expr GT expr')
     def expr(self, p):
