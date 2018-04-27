@@ -14,7 +14,6 @@ class HOCParser(Parser):
         ('left','EQ','NE'),
         ('left','LT','LE'),
         ('left','GT','GE'),
-        #('left','GT','GE','LT','LE','EQ','NE'),
         ('left','PLUS','MINUS'),
         ('left','TIMES','DIVIDE','MOD'),
         ('right', 'UMINUS'),
@@ -29,31 +28,41 @@ class HOCParser(Parser):
 
     @_('list NEWLINE')
     def list(self, p):
-        pass
+        return Program(p[0])
 
     @_('list defn NEWLINE')
     def list(self, p):
-        pass
+        plist = p[0]
+        plist.append(p[1])
+        return Program(plist)
 
     @_('list asgn NEWLINE')
     def list(self, p):
-        pass
+        plist = p[0]
+        plist.append(p[1])
+        return Program(plist)
 
     @_('list stmt NEWLINE')
     def list(self, p):
-        pass
+        plist = p[0]
+        plist.append(p[1])
+        return Program(plist)
 
     @_('list expr NEWLINE')
     def list(self, p):
-        pass
+        plist = p[0]
+        plist.append(p[1])
+        return Program(plist)
 
     @_('list error NEWLINE')
     def list (self,p):
-        pass
+        plist = p[0]
+        plist.append(p[1])
+        return Program(plist)
 
     @_('ID ASSIGN expr')
     def asgn(self, p):
-        pass
+        pass#return AssignmentStatement(p.lineno, p[2])
 
     @_('ARG ASSIGN expr')
     def asgn(self,p):
@@ -79,17 +88,13 @@ class HOCParser(Parser):
     def asgn(self, p):
         pass
 
-    '''@_('expr')
-    def stmt(self, p):
-        pass'''
-
     @_('var ID type ASSIGN INTEGER')
     def stmt(self, p):
-        pass
+        return VarDeclaration(p[1], p[2], p[4])
 
-    @_('var ID type ASSIGN FLOAT')
+    @_('var ID type ASSIGN NUMFLOAT')
     def stmt(self, p):
-        pass
+        return VarDeclaration(p[1], p[2], p[4])
 
     @_('var ID type')
     def stmt(self, p):
@@ -103,13 +108,13 @@ class HOCParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('CONST ID ASSIGN INTEGER')
+    @_('const ID ASSIGN INTEGER')
     def stmt(self, p):
-        pass
+        return ConstDeclaration(p[1], p[3])
 
-    @_('CONST ID ASSIGN FLOAT')
+    @_('const ID ASSIGN FLOAT')
     def stmt(self, p):
-        pass
+        return ConstDeclaration(p[1], p[3])
 
     @_('RETURN')
     def stmt(self, p):
@@ -185,40 +190,40 @@ class HOCParser(Parser):
 
     @_('stmtlist NEWLINE')
     def stmtlist(self, p):
-        pass
+        return  Statements(p[0])
 
     @_('stmtlist stmt')
     def stmtlist(self, p):
-        pass
+        stmlist = p[0]
+        stmlist.append(p[1])
+        return  Statements(stmlist)
+
 
     @_('INT')
     def type(self, p):
-        pass
+        return p[0]
 
     @_('FLOAT')
     def type(self, p):
-        pass
+        return p[0]
+
 
     @_('INTEGER')
     def expr(self, p):
-        pass
+        return p[0]
+
 
     @_('NUMFLOAT')
     def expr(self, p):
-        pass
+        return p[0]
 
     @_('ID')
     def expr(self, p):
-        pass
-
-
-    '''@_('asgn')
-    def expr(self, p):
-        pass'''
+        return [p[0]]
 
     @_('ARG')
     def expr(self,p):
-        pass
+        return [p[0]]
 
     @_('FUNCTION begin LPAREN arglist RPAREN')
     def expr(self, p):
@@ -318,19 +323,23 @@ class HOCParser(Parser):
 
     @_('expr')
     def prlist(self, p):
-        pass
+        return PrintStatement(p[0])
 
     @_('STRING')
     def prlist(self, p):
-        pass
+        return PrintStatement(p[0])
 
     @_('prlist COMMA expr')
     def prlist(self, p):
-        pass
+        plist = p[0]
+        plist.append(p[2])
+        return PrintStatement(plist)
 
     @_('prlist COMMA STRING')
     def prlist(self, p):
-        pass
+        plist = p[0]
+        plist.append(p[2])
+        return PrintStatement(plist)
 
     @_('ID type')
     def formals(self, p):
@@ -379,6 +388,10 @@ class HOCParser(Parser):
 
     @_('VAR')
     def var(self, p):
+        pass
+
+    @_('CONST')
+    def const(self, p):
         pass
 
 if __name__ == '__main__':
