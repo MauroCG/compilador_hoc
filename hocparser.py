@@ -403,6 +403,9 @@ class HOCParser(Parser):
 if __name__ == '__main__':
     lexer = HOCLexer()
     parser = HOCParser()
-    text = "var x int = 2"
+    text = '''
+    var x int = 20
+    '''
     ast = parser.parse(lexer.tokenize(text))
-    print(type(ast))
+    if ast:
+        ast.pprint()
