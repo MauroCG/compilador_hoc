@@ -62,31 +62,36 @@ class HOCParser(Parser):
 
     @_('ID ASSIGN expr')
     def asgn(self, p):
-        pass#return AssignmentStatement(p.lineno, p[2])
+        return AssignmentStatement(LoadLocation(p[0]), p[2])
 
     @_('ARG ASSIGN expr')
     def asgn(self,p):
-        pass
+        return AssignmentStatement(LoadLocation(p[0]), p[2])
 
     @_('ID ADDEQ expr')
     def asgn(self, p):
-        pass
+        expr = p[0].value + p[2].value
+        return AssignmentStatement(LoadLocation(p[0]), expr)
 
     @_('ID SUBEQ expr')
     def asgn(self, p):
-        pass
+        expr = p[0].value - p[2].value
+        return AssignmentStatement(LoadLocation(p[0]), expr)
 
     @_('ID MULEQ expr')
     def asgn(self, p):
-        pass
+        expr = p[0].value * p[2].value
+        return AssignmentStatement(LoadLocation(p[0]), expr)
 
     @_('ID DIVEQ expr')
     def asgn(self, p):
-        pass
+        expr = p[0].value / p[2].value
+        return AssignmentStatement(LoadLocation(p[0]), expr)
 
     @_('ID MODEQ expr')
     def asgn(self, p):
-        pass
+        expr = p[0].value % p[2].value
+        return AssignmentStatement(LoadLocation(p[0]), expr)
 
     @_('var ID type ASSIGN INTEGER')
     def stmt(self, p):
@@ -102,7 +107,7 @@ class HOCParser(Parser):
 
     @_('FUNC procname LPAREN formals RPAREN type stmt')
     def stmt(self, p):
-        pass
+        return FuncPrototype(p[1], Parameters(p[3]), p[5])
 
     @_('PROC procname LPAREN formals RPAREN stmt')
     def stmt(self, p):
@@ -118,7 +123,7 @@ class HOCParser(Parser):
 
     @_('RETURN')
     def stmt(self, p):
-        pass
+        return Statement(p[0])
 
     @_('RETURN expr')
     def stmt(self, p):
@@ -154,7 +159,7 @@ class HOCParser(Parser):
 
     @_('LBRACKET stmtlist RBRACKET')
     def stmt(self, p):
-        pass
+        return Statements(p[1])
 
     @_('LPAREN expr RPAREN')
     def cond(self, p):
@@ -195,7 +200,7 @@ class HOCParser(Parser):
     @_('stmtlist stmt')
     def stmtlist(self, p):
         stmlist = p[0]
-        stmlist.append(p[1])
+        stmlist.append(Statement(p[1]))
         return  Statements(stmlist)
 
 
@@ -239,7 +244,7 @@ class HOCParser(Parser):
 
     @_('LPAREN expr RPAREN')
     def expr(self, p):
-        pass
+        return p[1]
 
     @_('expr PLUS expr')
     def expr(self, p):
@@ -343,11 +348,13 @@ class HOCParser(Parser):
 
     @_('ID type')
     def formals(self, p):
-        pass
+        return ParamDecl(p[0], p[1])
 
     @_('ID COMMA formals')
     def formals(self, p):
-        pass
+        flist = p[2]
+        flist.append(p[0])
+        return Parameters(flist)
 
     @_('FUNC procname')
     def defn(self,p):
@@ -356,7 +363,6 @@ class HOCParser(Parser):
     @_('PROC procname')
     def defn(self,p):
         pass
-
 
     @_('ID')
     def procname(self, p):
@@ -388,19 +394,15 @@ class HOCParser(Parser):
 
     @_('VAR')
     def var(self, p):
-        pass
+        return p[0]
 
     @_('CONST')
     def const(self, p):
-        pass
+        return p[0]
 
 if __name__ == '__main__':
     lexer = HOCLexer()
     parser = HOCParser()
-    while True:
-        try:
-            text = input('calc > ')
-            result = parser.parse(lexer.tokenize(text))
-            print(result)
-        except EOFError:
-            break
+    text = "var x int = 2"
+    ast = parser.parse(lexer.tokenize(text))
+    print(type(ast))
