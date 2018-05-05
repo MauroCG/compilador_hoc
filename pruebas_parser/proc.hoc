@@ -1,5 +1,11 @@
-proc printsquare() {local x
-   x = a1
+proc pr(){
+        print 3
+        print 1*2
+        print "hola mundo"
+}
+
+proc printsquare() {
+   var x int = a1
    print x*x
  }
 printsquare(5)
