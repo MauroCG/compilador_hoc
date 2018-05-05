@@ -24,100 +24,107 @@ class HOCParser(Parser):
 
     @_('empty')
     def list(self, p):
-        return Empty()
+        return
 
     @_('list NEWLINE')
     def list(self, p):
-        return Program(p[0])
+        return p.list
 
     @_('list defn NEWLINE')
     def list(self, p):
-        plist = p[0]
-        plist.append(p[1])
-        return Program(plist)
+        if(p.list is None):
+            return ListaPrograma([p.defn], [], [], [], [])
+        else:
+            p.list.appendDefn(p.defn)
+            return p.list
 
     @_('list asgn NEWLINE')
     def list(self, p):
-        plist = p[0]
-        plist.append(p[1])
-        return Program(plist)
+        if(p.list is None):
+            return ListaPrograma([], [p.asgn], [], [], [])
+        else:
+            p.list.appendAsgn(p.asgn)
+            return p.list
 
     @_('list stmt NEWLINE')
     def list(self, p):
-        plist = p[0]
-        plist.append(p[1])
-        return Program(plist)
+        if(p.list is None):
+            return ListaPrograma([], [], [p.stmt], [], [])
+        else:
+            p.list.appendStmt(p.stmt)
+            return p.list
+
 
     @_('list expr NEWLINE')
     def list(self, p):
-        plist = p[0]
-        plist.append(p[1])
-        return Program(plist)
+        if(p.list is None):
+            return ListaPrograma([], [], [], [p.expr], [])
+        else:
+            p.list.appendExpr(p.expr)
+            return p.list
 
     @_('list error NEWLINE')
     def list (self,p):
-        plist = p[0]
-        plist.append(p[1])
-        return Program(plist)
-
-    @_('ID ASSIGN expr')
-    def asgn(self, p):
-        return AssignmentStatement(LoadLocation(p[0]), p[2])
+        if(p.list is None):
+            return ListaPrograma([], [], [], [], [p.error])
+        else:
+            p.list.appendError(p.error)
+            return p.list
 
     @_('ARG ASSIGN expr')
     def asgn(self,p):
-        return AssignmentStatement(LoadLocation(p[0]), p[2])
+        return AsgnARG(p.expr)
+
+    @_('ID ASSIGN expr')
+    def asgn(self, p):
+        return AsgnIdExpr(p.ID, p.ASSIGN, p.expr)
+
 
     @_('ID ADDEQ expr')
     def asgn(self, p):
-        expr = p[0].value + p[2].value
-        return AssignmentStatement(LoadLocation(p[0]), expr)
+        return AsgnIdExpr(p.ID, p.ADDEQ, p.expr)
 
     @_('ID SUBEQ expr')
     def asgn(self, p):
-        expr = p[0].value - p[2].value
-        return AssignmentStatement(LoadLocation(p[0]), expr)
+        return AsgnIdExpr(p.ID, p.SUBEQ, p.expr)
 
     @_('ID MULEQ expr')
     def asgn(self, p):
-        expr = p[0].value * p[2].value
-        return AssignmentStatement(LoadLocation(p[0]), expr)
+        return AsgnIdExpr(p.ID, p.MULEQ, p.expr)
 
     @_('ID DIVEQ expr')
     def asgn(self, p):
-        expr = p[0].value / p[2].value
-        return AssignmentStatement(LoadLocation(p[0]), expr)
+        return AsgnIdExpr(p.ID, p.DIVEQ, p.expr)
 
     @_('ID MODEQ expr')
     def asgn(self, p):
-        expr = p[0].value % p[2].value
-        return AssignmentStatement(LoadLocation(p[0]), expr)
+        return AsgnIdExpr(p.ID, p.MODEQ, p.expr)
 
-    @_('var ID type ASSIGN INTEGER')
+    @_('VAR ID type ASSIGN INTEGER')
     def stmt(self, p):
         return VarDeclaration(p[1], p[2], p[4])
 
-    @_('var ID type ASSIGN NUMFLOAT')
+    @_('VAR ID type ASSIGN NUMFLOAT')
     def stmt(self, p):
         return VarDeclaration(p[1], p[2], p[4])
 
-    @_('var ID type')
+    @_('VAR ID type')
     def stmt(self, p):
-        pass
+        return VarDefinition(p.id, p.type)
 
-    @_('FUNC procname LPAREN formals RPAREN type stmt')
+    @_('FUNC procname LPAREN formals RPAREN type LBRACKET stmtlist RBRACKET')
     def stmt(self, p):
-        return FuncPrototype(p[1], Parameters(p[3]), p[5])
+        return FuncDecl(p[1], p[3], p[5], p[7])
 
-    @_('PROC procname LPAREN formals RPAREN stmt')
+    @_('PROC procname LPAREN formals RPAREN LBRACKET stmtlist RBRACKET')
     def stmt(self, p):
-        pass
+        return ProcDecl(p[1], p[3], p[6])
 
-    @_('const ID ASSIGN INTEGER')
+    @_('CONST ID ASSIGN INTEGER')
     def stmt(self, p):
         return ConstDeclaration(p[1], p[3])
 
-    @_('const ID ASSIGN FLOAT')
+    @_('CONST ID ASSIGN FLOAT')
     def stmt(self, p):
         return ConstDeclaration(p[1], p[3])
 
@@ -137,7 +144,7 @@ class HOCParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('WHILE_STM LPAREN cond RPAREN stmt')
+    @_('WHILE LPAREN cond RPAREN stmt')
     def stmt(self,p):
         pass
 
@@ -145,41 +152,63 @@ class HOCParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('IF LPAREN cond RPAREN stmt end ')
+    @_('IF LPAREN cond RPAREN stmt')
     def stmt(self, p):
         pass
 
-    @_('IF LPAREN cond RPAREN stmt end ELSE_STM stmt end')
+    @_('IF LPAREN cond RPAREN LBRACKET stmtlist RBRACKET ELSE LBRACKET stmtlist RBRACKET')
+    def stmt(self, p):
+
+        pass
+
+    @_('IF LPAREN cond RPAREN LBRACKET stmtlist RBRACKET ELSE stmt')
     def stmt(self, p):
         pass
 
-    @_('if_stm cond stmt end')
-    def stmt(self,p):
-        pass
+    
 
-    @_('LBRACKET stmtlist RBRACKET')
-    def stmt(self, p):
-        return Statements(p[1])
-
-    @_('LPAREN expr RPAREN')
+    @_('expr GT expr')
     def cond(self, p):
-        pass
+        return RelationalOp(p[1], p[0], p[2])
 
-    @_('WHILE')
-    def WHILE_STM (self, p):
-        pass
+    @_('expr GE expr')
+    def cond(self, p):
+        return RelationalOp(p[1], p[0], p[2])
 
-    @_('ELSE')
-    def ELSE_STM (self,p):
-        pass
+    @_('expr LT expr')
+    def cond(self, p):
+        return RelationalOp(p[1], p[0], p[2])
+
+    @_('expr LE expr')
+    def cond(self, p):
+        return RelationalOp(p[1], p[0], p[2])
+
+    @_('expr EQ expr')
+    def cond(self, p):
+        return RelationalOp(p[1], p[0], p[2])
+
+    @_('expr NE expr')
+    def cond(self, p):
+        return RelationalOp(p[1], p[0], p[2])
+
+    @_('expr AND expr')
+    def cond(self, p):
+        return LogicalOp(p[1], p[0], p[2])
+
+    @_('expr OR expr')
+    def cond(self, p):
+        return LogicalOp(p[1], p[0], p[2])
+
+    @_('NOT expr')
+    def cond(self, p):
+        return UnaryOp(p[0], p[1])
+
+
 
     '''@_('FOR')
     def FOR (self, p):
         pass'''
 
-    @_('IF')
-    def if_stm(self, p):
-        pass
 
     @_('empty')
     def begin(self, p):
@@ -189,19 +218,23 @@ class HOCParser(Parser):
     def end(self, p):
         return Empty()
 
-    @_('empty')
+    @_('NEWLINE')
     def stmtlist(self, p):
-        return Empty()
+        pass#return  Statements(p[0])
 
+    @_('stmt')
+    def stmtlist(self, p):
+        pass
     @_('stmtlist NEWLINE')
     def stmtlist(self, p):
-        return  Statements(p[0])
+        pass#return  Statements(p[0])
 
     @_('stmtlist stmt')
     def stmtlist(self, p):
-        stmlist = p[0]
+        '''stmlist = p[0]
         stmlist.append(Statement(p[1]))
-        return  Statements(stmlist)
+        return  Statements(stmlist)'''
+        pass
 
 
     @_('INT')
@@ -212,23 +245,12 @@ class HOCParser(Parser):
     def type(self, p):
         return p[0]
 
+    @_('empty')
+    def type(self, p):
+        pass
 
-    @_('INTEGER')
-    def expr(self, p):
-        return p[0]
 
-
-    @_('NUMFLOAT')
-    def expr(self, p):
-        return p[0]
-
-    @_('ID')
-    def expr(self, p):
-        return [p[0]]
-
-    @_('ARG')
-    def expr(self,p):
-        return [p[0]]
+    
 
     @_('FUNCTION begin LPAREN arglist RPAREN')
     def expr(self, p):
@@ -246,27 +268,15 @@ class HOCParser(Parser):
     def expr(self, p):
         return p[1]
 
-    @_('expr PLUS expr')
+    @_('LPAREN RPAREN')
+    def expr(self, p):
+        return
+
+    @_('expr PLUS term')
     def expr(self, p):
         return BinaryOp(p[1], p[0], p[2])
 
-    @_('expr MINUS expr')
-    def expr(self, p):
-        return BinaryOp(p[1], p[0], p[2])
-
-    @_('expr TIMES expr')
-    def expr(self, p):
-        return BinaryOp(p[1], p[0], p[2])
-
-    @_('expr DIVIDE expr')
-    def expr(self, p):
-        return BinaryOp(p[1], p[0], p[2])
-
-    @_('expr MOD expr')
-    def expr(self, p):
-        return BinaryOp(p[1], p[0], p[2])
-
-    @_('expr EXP expr')
+    @_('expr MINUS term')
     def expr(self, p):
         return BinaryOp(p[1], p[0], p[2])
 
@@ -274,57 +284,68 @@ class HOCParser(Parser):
     def expr(self, p):
         return UnaryOp(p[0], p[1])
 
-    @_('expr GT expr')
+    @_('term')
     def expr(self, p):
-        return RelationalOp(p[1], p[0], p[2])
+        pass#return UnaryOp(p[0], p[1])
 
-    @_('expr GE expr')
-    def expr(self, p):
-        return RelationalOp(p[1], p[0], p[2])
+    @_('term TIMES fact')
+    def term(self, p):
+        return BinaryOp(p[1], p[0], p[2])
 
-    @_('expr LT expr')
-    def expr(self, p):
-        return RelationalOp(p[1], p[0], p[2])
+    @_('term DIVIDE fact')
+    def term(self, p):
+        return BinaryOp(p[1], p[0], p[2])
 
-    @_('expr LE expr')
-    def expr(self, p):
-        return RelationalOp(p[1], p[0], p[2])
+    @_('term MOD fact')
+    def term(self, p):
+        return BinaryOp(p[1], p[0], p[2])
 
-    @_('expr EQ expr')
-    def expr(self, p):
-        return RelationalOp(p[1], p[0], p[2])
+    @_('term EXP fact')
+    def term(self, p):
+        return BinaryOp(p[1], p[0], p[2])
 
-    @_('expr NE expr')
-    def expr(self, p):
-        return RelationalOp(p[1], p[0], p[2])
-
-    @_('expr AND expr')
-    def expr(self, p):
-        return LogicalOp(p[1], p[0], p[2])
-
-    @_('expr OR expr')
-    def expr(self, p):
-        return LogicalOp(p[1], p[0], p[2])
-
-    @_('NOT expr')
-    def expr(self, p):
-        return UnaryOp(p[0], p[1])
-
+    @_('fact')
+    def term(self, p):
+        pass
+    
     @_('INC ID')
-    def expr(self, p):
+    def fact(self, p):
         return UnaryOp(p[0], p[1])
 
     @_('DEC ID')
-    def expr(self, p):
+    def fact(self, p):
         return UnaryOp(p[0], p[1])
 
     @_('ID INC')
-    def expr(self, p):
+    def fact(self, p):
         return UnaryOp(p[1], p[0])
 
     @_('ID DEC')
-    def expr(self, p):
+    def fact(self, p):
         return UnaryOp(p[1], p[0])
+
+    @_('INTEGER')
+    def fact(self, p):
+        return p[0]
+
+    @_('ID expr')
+    def fact(self, p):
+        pass
+
+
+    @_('NUMFLOAT')
+    def fact(self, p):
+        return p[0]
+
+    @_('ID')
+    def fact(self, p):
+        return [p[0]]
+
+    @_('ARG')
+    def fact(self,p):
+        return [p[0]]
+
+
 
     @_('expr')
     def prlist(self, p):
@@ -350,11 +371,15 @@ class HOCParser(Parser):
     def formals(self, p):
         return ParamDecl(p[0], p[1])
 
-    @_('ID COMMA formals')
+    @_('ID type COMMA formals')
     def formals(self, p):
         flist = p[2]
         flist.append(p[0])
         return Parameters(flist)
+
+    @_('empty')
+    def formals(self, p):
+        return Empty()
 
     @_('FUNC procname')
     def defn(self,p):
@@ -392,20 +417,31 @@ class HOCParser(Parser):
     def empty(self,p):
         pass
 
-    @_('VAR')
-    def var(self, p):
-        return p[0]
 
-    @_('CONST')
-    def const(self, p):
-        return p[0]
+    def error(self, p):
+        if p:
+            print("Syntax error at token", p.type, p.lineno, p.value)
+            # Just discard the token or tell the parser it's okay.
+        else:
+            print("Syntax error at EOF")
+        
+def parse(data, debug=0):
+    #print(parser.error)
+    p = parser.parse(lexer.tokenize(data))
+    #print(parser.errorStatus)
+    print("sin errores\n")
+    return p
+
+
 
 if __name__ == '__main__':
+    import sys 
     lexer = HOCLexer()
     parser = HOCParser()
-    text = '''
-    var x int = 20
-    '''
-    ast = parser.parse(lexer.tokenize(text))
-    if ast:
-        ast.pprint()
+    if(len(sys.argv)!=2):#Verifica la cantidad de argumentos a la hora de compilar si no son 2. "py 'fichero.py' 'archivo'"
+        sys.stderr.write('Usage: "{}" "filename"\n'.format(sys.argv[0]))#permite que al al compilar indique que debe de darse el archivo de la forma python.exe "fichero.py" "Archivo a abrir, como un simple print"
+        raise SystemExit(1)#termina el programa
+    file= open(sys.argv[1]).read()
+    
+    p=parse(file)
+    p.pprint()

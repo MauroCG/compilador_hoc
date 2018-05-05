@@ -30,6 +30,8 @@ class AST(object):
                 # Asigna argumentos adicionales (keywords) si se suministran
                 for name,value in kwargs.items():
                         setattr(self,name,value)
+        def __repr__(self):
+                return self.__class__.__name__
 
         def pprint(self):
                 for depth, node in flatten(self):
@@ -59,6 +61,42 @@ def validate_fields(**fields):
 # ----------------------------------------------------------------------
 
 # Unos pocos nodos ejemplos
+
+@validate_fields(defns=list, asgns=list, stmts=list, exprs=list, errors=list)
+class ListaPrograma(AST):
+        _fields=["defns", "asgns", "stmts", "exprs", "errors"]
+        def appendDefn(self, defn):
+                self.defns.append(defn)
+        def appendAsgn(self, asgn):
+                self.asgns.append(asgn)
+        def appendStmt(self, stmt):
+                self.stmts.append(stmt)
+        def appendExpr(self, expr):
+                self.exprs.append(expr)
+        def appendError(self, error):
+                self.errors.append(error)
+
+class AsgnIdExpr(AST):
+        _fields=["ID", "simbol", "expr"]
+
+class AsgnARG(AST):
+        _fields=["expr"]
+
+class VarDeclaration(AST):
+        _fields = ['id', 'type', 'value']
+
+class VarDefinition(AST):
+        _fields = ['id', 'type']
+
+class FuncDecl(AST):
+        _fields = ['name', 'params', 'functype', 'stmtlist']
+
+class ProcDecl(AST):
+        _fields = ['name', 'params', 'stmtlist']
+
+
+
+
 
 class PrintStatement(AST):
         '''
@@ -106,9 +144,6 @@ class AssignmentStatement(AST):
 
 class ConstDeclaration(AST):
         _fields = ['id', 'value']
-
-class VarDeclaration(AST):
-        _fields = ['id', 'typename', 'value']
 
 class IfStatement(AST):
         _fields = ['condition', 'then_b', 'else_b']

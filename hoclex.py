@@ -6,8 +6,8 @@ class HOCLexer(Lexer):
     #-------------------------------------------------------------------------------
     # Conjunto de palabras reservadas. Este conjunto enumera todos los
     # nombres especiales utilizados en el lenguaje
-    keywords = { 'var','if','for','begin','while','end','else','print','const','read',
-    'proc','arg','func','extern','return', 'bltin', 'int', 'float' }
+    keywords = { 'var','if','for','while','else','print','const','read',
+    'proc','arg','func','return', 'bltin', 'int', 'float' }
 
     #--------------------------------------------------------------------------------
     # Conjunto de tokens. Este conjunto identifica la lista completa de
@@ -29,8 +29,8 @@ class HOCLexer(Lexer):
     'AND', 'OR', 'NOT', 'DEC', 'INC',
 
     # Delimitadores y otros símbolos
-    'ASSIGN','LPAREN','RPAREN','SEMI','COMMA',
-    'LBRACE','RBRACE','LBRACKET','RBRACKET','GT','GE','LT','LE','EQ','NE'
+    'ASSIGN','LPAREN','RPAREN','COMMA',
+    'LBRACKET','RBRACKET','GT','GE','LT','LE','EQ','NE'
     }
 
 
@@ -140,7 +140,6 @@ class HOCLexer(Lexer):
     OR = r'\|\|'
     AND = r'&&'
     NOT = r'!'
-    SEMI = r';'
     LPAREN = r'\('
     RPAREN = r'\)'
     COMMA = r','
@@ -164,9 +163,10 @@ class HOCLexer(Lexer):
     '''@_(r'\n+')
     def ignore_newline(self,t):
         self.lineno += t.value.count('\n')'''
-    @_(r'\n')
+    @_(r'\n+')
     def NEWLINE(self,t):
-        pass
+        self.lineno += t.value.count('\n')
+        return t
 
     #----------------------------------------------------------------------
     # Manejo de errores de caracteres incorrectos
