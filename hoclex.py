@@ -143,7 +143,7 @@ class HOCLexer(Lexer):
     LPAREN = r'\('
     RPAREN = r'\)'
     COMMA = r','
-    SEMI = r':'
+    SEMI = r';'
     LBRACKET = r'\{'
     RBRACKET = r'\}'
 
@@ -160,10 +160,6 @@ class HOCLexer(Lexer):
 
 
 
-    # Ignore nueva linea
-    '''@_(r'\n+')
-    def ignore_newline(self,t):
-        self.lineno += t.value.count('\n')'''
     @_(r'\n+')
     def NEWLINE(self,t):
         self.lineno += t.value.count('\n')

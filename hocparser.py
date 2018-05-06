@@ -110,7 +110,7 @@ class HOCParser(Parser):
 
     @_('VAR ID type')
     def stmt(self, p):
-        return VarDefinition(p.id, p.type)
+        pass#return VarDefinition(p.id, p.type)
 
     @_('FUNC procname LPAREN formals RPAREN type LBRACKET stmtlist RBRACKET')
     def stmt(self, p):
@@ -302,29 +302,24 @@ class HOCParser(Parser):
         pass
     
     @_('INC ID')
-    def fact(self, p):
+    def expr(self, p):
         return UnaryOp(p[0], p[1])
 
     @_('DEC ID')
-    def fact(self, p):
+    def expr(self, p):
         return UnaryOp(p[0], p[1])
 
     @_('ID INC')
-    def fact(self, p):
+    def expr(self, p):
         return UnaryOp(p[1], p[0])
 
     @_('ID DEC')
-    def fact(self, p):
+    def expr(self, p):
         return UnaryOp(p[1], p[0])
 
     @_('INTEGER')
     def fact(self, p):
         return p[0]
-
-    @_('ID expr')
-    def fact(self, p):
-        pass
-
 
     @_('NUMFLOAT')
     def fact(self, p):
@@ -337,8 +332,6 @@ class HOCParser(Parser):
     @_('ARG')
     def fact(self,p):
         return [p[0]]
-
-
 
     @_('expr')
     def prlist(self, p):
