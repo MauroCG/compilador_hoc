@@ -12,5 +12,11 @@ func atan2(){
                  return 0
          }
  }
- atan()
+ 
+ func max(){
+    if (a > b){
+            return a
+    } else {
+            return b
+    }
  
