@@ -19,4 +19,7 @@ func atan2(){
     } else {
             return b
     }
+
+function max()
+function atan2()
  

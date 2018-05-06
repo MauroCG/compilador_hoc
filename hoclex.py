@@ -29,7 +29,7 @@ class HOCLexer(Lexer):
     'AND', 'OR', 'NOT', 'DEC', 'INC',
 
     # Delimitadores y otros símbolos
-    'ASSIGN','LPAREN','RPAREN','COMMA',
+    'ASSIGN','LPAREN','RPAREN','COMMA', 'SEMI',
     'LBRACKET','RBRACKET','GT','GE','LT','LE','EQ','NE'
     }
 
@@ -143,6 +143,7 @@ class HOCLexer(Lexer):
     LPAREN = r'\('
     RPAREN = r'\)'
     COMMA = r','
+    SEMI = r':'
     LBRACKET = r'\{'
     RBRACKET = r'\}'
 

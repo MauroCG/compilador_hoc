@@ -26,11 +26,11 @@ class HOCParser(Parser):
     def list(self, p):
         return
 
-    @_('list NEWLINE')
+    @_('list semi NEWLINE')
     def list(self, p):
         return p.list
 
-    @_('list defn NEWLINE')
+    @_('list defn semi NEWLINE')
     def list(self, p):
         if(p.list is None):
             return ListaPrograma([p.defn], [], [], [], [])
@@ -38,7 +38,7 @@ class HOCParser(Parser):
             p.list.appendDefn(p.defn)
             return p.list
 
-    @_('list asgn NEWLINE')
+    @_('list asgn semi NEWLINE')
     def list(self, p):
         if(p.list is None):
             return ListaPrograma([], [p.asgn], [], [], [])
@@ -46,7 +46,7 @@ class HOCParser(Parser):
             p.list.appendAsgn(p.asgn)
             return p.list
 
-    @_('list stmt NEWLINE')
+    @_('list stmt semi NEWLINE')
     def list(self, p):
         if(p.list is None):
             return ListaPrograma([], [], [p.stmt], [], [])
@@ -55,7 +55,7 @@ class HOCParser(Parser):
             return p.list
 
 
-    @_('list expr NEWLINE')
+    @_('list expr semi NEWLINE')
     def list(self, p):
         if(p.list is None):
             return ListaPrograma([], [], [], [p.expr], [])
@@ -63,7 +63,7 @@ class HOCParser(Parser):
             p.list.appendExpr(p.expr)
             return p.list
 
-    @_('list error NEWLINE')
+    @_('list error semi NEWLINE')
     def list (self,p):
         if(p.list is None):
             return ListaPrograma([], [], [], [], [p.error])
@@ -202,13 +202,6 @@ class HOCParser(Parser):
     @_('NOT expr')
     def cond(self, p):
         return UnaryOp(p[0], p[1])
-
-
-
-    '''@_('FOR')
-    def FOR (self, p):
-        pass'''
-
 
     @_('empty')
     def begin(self, p):
@@ -411,6 +404,13 @@ class HOCParser(Parser):
 
     @_('arglist COMMA expr')
     def arglist(self, p):
+        pass
+
+    @_('SEMI')
+    def semi(self, p):
+        pass
+    @_('empty')
+    def semi(self, p):
         pass
 
     @_('')
