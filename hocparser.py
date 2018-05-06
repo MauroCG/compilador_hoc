@@ -140,7 +140,11 @@ class HOCParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('PRINT prlist')
+    @_('PRINT  prlist ')
+    def stmt(self, p):
+        pass
+
+    @_('PRINT 	LPAREN prlist RPAREN')
     def stmt(self, p):
         pass
 
