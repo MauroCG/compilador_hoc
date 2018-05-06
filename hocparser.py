@@ -140,11 +140,7 @@ class HOCParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('PRINT  prlist ')
-    def stmt(self, p):
-        pass
-
-    @_('PRINT 	LPAREN prlist RPAREN')
+    @_('PRINT  prlist')
     def stmt(self, p):
         pass
 
@@ -345,17 +341,33 @@ class HOCParser(Parser):
     def prlist(self, p):
         return PrintStatement(p[0])
 
+    @_('LPAREN prlist COMMA expr RPAREN')
+    def prlist(self, p):
+        '''plist = p[0]
+        plist.append(p[2])
+        return PrintStatement(plist)'''
+        pass
+
+    @_('LPAREN prlist COMMA STRING RPAREN')
+    def prlist(self, p):
+        '''plist = p[0]
+        plist.append(p[2])
+        return PrintStatement(plist)'''
+        pass
+
     @_('prlist COMMA expr')
     def prlist(self, p):
-        plist = p[0]
+        '''plist = p[0]
         plist.append(p[2])
-        return PrintStatement(plist)
+        return PrintStatement(plist)'''
+        pass
 
     @_('prlist COMMA STRING')
     def prlist(self, p):
-        plist = p[0]
+        '''plist = p[0]
         plist.append(p[2])
-        return PrintStatement(plist)
+        return PrintStatement(plist)'''
+        pass
 
     @_('ID type')
     def formals(self, p):

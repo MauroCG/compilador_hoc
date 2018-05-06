@@ -2,5 +2,6 @@ var x int = 2;
 var y int = 10;
 var w;
 w = x*y^2
-print w
+print(w, 2, 3, "hola mundo")
+print w, 2, 3+3, "hola mundo0"
 
