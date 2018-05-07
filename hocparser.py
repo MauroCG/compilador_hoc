@@ -261,6 +261,14 @@ class HOCParser(Parser):
     def expr(self, p):
         return p[1]
 
+    @_('ID LPAREN expr RPAREN')
+    def expr(self, p):
+        return p[2]
+
+    @_('ID LPAREN RPAREN')
+    def expr(self, p):
+        return
+
     @_('LPAREN RPAREN')
     def expr(self, p):
         return
@@ -333,11 +341,16 @@ class HOCParser(Parser):
     def fact(self,p):
         return [p[0]]
 
+
     @_('expr')
     def prlist(self, p):
         return PrintStatement(p[0])
 
     @_('STRING')
+    def prlist(self, p):
+        return PrintStatement(p[0])
+
+    @_('LPAREN STRING RPAREN')
     def prlist(self, p):
         return PrintStatement(p[0])
 
