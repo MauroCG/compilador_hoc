@@ -3,5 +3,7 @@ var y int = 10;
 var w;
 w = x*y^2
 print(w, 2, 3, "hola mundo")
-print w, 2, 3+3, "hola mundo0"
+print w, 2, 3+3, "hola mundo"
+print("HOLA MUNDO")
+print "HOLA MUNDO"
 

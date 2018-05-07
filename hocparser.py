@@ -265,6 +265,22 @@ class HOCParser(Parser):
     def expr(self, p):
         return
 
+    @_('INC ID')
+    def expr(self, p):
+        return UnaryOp(p[0], p[1])
+
+    @_('DEC ID')
+    def expr(self, p):
+        return UnaryOp(p[0], p[1])
+
+    @_('ID INC')
+    def expr(self, p):
+        return UnaryOp(p[1], p[0])
+
+    @_('ID DEC')
+    def expr(self, p):
+        return UnaryOp(p[1], p[0])
+
     @_('expr PLUS term')
     def expr(self, p):
         return BinaryOp(p[1], p[0], p[2])
@@ -279,7 +295,7 @@ class HOCParser(Parser):
 
     @_('term')
     def expr(self, p):
-        pass#return UnaryOp(p[0], p[1])
+        pass
 
     @_('term TIMES fact')
     def term(self, p):
@@ -300,22 +316,6 @@ class HOCParser(Parser):
     @_('fact')
     def term(self, p):
         pass
-    
-    @_('INC ID')
-    def expr(self, p):
-        return UnaryOp(p[0], p[1])
-
-    @_('DEC ID')
-    def expr(self, p):
-        return UnaryOp(p[0], p[1])
-
-    @_('ID INC')
-    def expr(self, p):
-        return UnaryOp(p[1], p[0])
-
-    @_('ID DEC')
-    def expr(self, p):
-        return UnaryOp(p[1], p[0])
 
     @_('INTEGER')
     def fact(self, p):

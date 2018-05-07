@@ -1,0 +1,130 @@
+include "math.hoc";
+include "str.hoc";
+include "fibo.hoc";
+include "fizzbuzz.hoc";
+include "sort.hoc";
+include "std.hoc";
+/*
+*/
+
+[4][2]int array_2dim;
+
+void test_array_2dim()
+{
+  array_2dim[0][0] = 123;
+  array_2dim[0][1] = 124;
+  array_2dim[1][0] = 125;
+  array_2dim[1][1] = 126;
+  array_2dim[2][0] = 127;
+  array_2dim[2][1] = 128;
+  array_2dim[3][0] = 129;
+  array_2dim[3][1] = 130;
+
+  int i = 0;
+  do
+  {
+    int j = 0;
+    do
+    {
+      print_int(array_2dim[i][j]);
+      print_str(&" ");
+      j = j + 1;
+    }
+    while(j < 2);
+
+    print_nl();
+    i = i + 1;
+  }
+  while(i < 4);
+}
+
+void print_numbers(int^ numbers, int len)
+{
+  int i = 0;
+  while(i < len)
+  {
+    print_int(numbers[i]);
+    print_nl();
+
+    i = i+1;
+  }
+}
+
+int^ make_numbers(int how_many)
+{
+  int i = 0;
+  int c1 = 17;
+  int c2 = 31;
+  int^ numbers = (int^)cast alloc(how_many);
+
+  while(i < how_many)
+  {
+    if((i % 2) == 0)
+      numbers[i] = c1 * i;
+    else
+      numbers[i] = c2 * i;
+
+    i = i+1;
+  }
+  return numbers;
+}
+
+void print_title(char^ title)
+{
+  int len = str_len(title);
+  print_str(&"\n  ");
+  print_str(title);
+  print_nl();
+
+  int L = len + 4;
+  int i = 0;
+  while(i < L)
+  {
+    print_str(&"-");
+    i = i + 1;
+  }
+  print_nl();
+}
+
+void main()
+{
+  float x = -12.0;
+  float y = 1.058;
+  float z = x + y;
+  print_nl();
+  print_float(x);
+  print_str(&" + ");
+  print_float(y);
+  print_str(&" = ");
+  print_float(z);
+  print_nl();
+
+  int a = 7*7*5*3;
+  int b = 7*3*11;
+  int r = gcd(a, b);
+  print_str(&"\ngcd(");
+  print_int(a);
+  print_str(&", ");
+  print_int(b);
+  print_str(&") = ");
+  print_int(r);
+  print_nl();
+
+  int nr_count = 15;
+  int^ numbers = make_numbers(nr_count);
+  print_title(&"SHUFFLED");
+  print_numbers(numbers, nr_count);
+
+  quick_sort(numbers, nr_count);
+  print_title(&"SORTED");
+  print_numbers(numbers, nr_count);
+
+  print_title(&"FIBONACCI");
+  fibo(20);
+
+  print_title(&"FIZZBUZZ");
+  fizzbuzz(30);
+
+  print_title(&"2-DIM ARRAY");
+  test_array_2dim();
+}

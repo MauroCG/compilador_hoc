@@ -1,0 +1,24 @@
+/*
+   Prints the first 'n' Fibonacci numbers
+*/
+void fibo(int n)
+{
+  if(n > 0)
+  {
+    int f_1 = 0;
+    int f_2 = 1;
+    int f_n = f_1 + f_2;
+
+    while(n > 0)
+    {
+      print_int(f_n);
+      print_nl();
+
+      f_n = f_2 + f_1;
+      f_1 = f_2;
+      f_2 = f_n;
+      n = n - 1;
+    }
+  }
+}
+

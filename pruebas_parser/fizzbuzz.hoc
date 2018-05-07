@@ -1,0 +1,30 @@
+/*
+   For all integers from 1 to 'n' print:
+     fizz if it's divisible by 3
+     buzz if it's divisible by 5
+     fizzbuzz if it's divisible by 15
+     else print the integer itself
+*/
+void fizzbuzz(int n)
+{
+  if(n > 0)
+  {
+    int i = 1;
+    while(i <= n)
+    {
+      if((i % 15) == 0)
+        print_str(&"fizzbuzz");
+      else if((i % 3) == 0)
+        print_str(&"buzz");
+      else if((i % 5) == 0)
+        print_str(&"fizz");
+      else
+        print_int(i);
+
+      print_nl();
+      i = i + 1;
+    }
+  }
+}
+
+
