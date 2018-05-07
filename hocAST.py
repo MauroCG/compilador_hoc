@@ -172,6 +172,9 @@ class Group(AST):
 class FunCall(AST):
         _fields = ['id', 'params']
 
+class ProcCall(AST):
+        _fields = ['id', 'params']
+
 class ExprList(AST):
         _fields = ['expressions']
 

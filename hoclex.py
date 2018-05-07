@@ -30,7 +30,8 @@ class HOCLexer(Lexer):
 
     # Delimitadores y otros símbolos
     'ASSIGN','LPAREN','RPAREN','COMMA', 'SEMI',
-    'LBRACKET','RBRACKET','GT','GE','LT','LE','EQ','NE'
+    'LBRACKET','RBRACKET','GT','GE','LT','LE','EQ','NE',
+    'LBRACE', 'RBRACE'
     }
 
 
@@ -146,6 +147,8 @@ class HOCLexer(Lexer):
     SEMI = r';'
     LBRACKET = r'\{'
     RBRACKET = r'\}'
+    LBRACE = r'\['
+    RBRACE = r'\]'
 
 
     # Las palabras reservadas del lenguaje como "if" y "while" también se

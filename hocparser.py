@@ -136,11 +136,11 @@ class HOCParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('PROCEDURE begin LPAREN arglist RPAREN')
+    @_('PROCEDURE procname begin LPAREN arglist RPAREN')
     def stmt(self, p):
-        pass
+        return ProcCall(p[1],p[4])
 
-    @_('PRINT  prlist')
+    @_('PRINT prlist')
     def stmt(self, p):
         pass
 
@@ -242,12 +242,10 @@ class HOCParser(Parser):
     def type(self, p):
         pass
 
-
-    
-
-    @_('FUNCTION begin LPAREN arglist RPAREN')
+    @_('FUNCTION procname begin LPAREN arglist RPAREN')
     def expr(self, p):
-        pass
+        print ("lop")
+        return Funcall(p[1],[4])
 
     @_('READ LPAREN ID RPAREN')
     def expr(self, p):
@@ -257,9 +255,9 @@ class HOCParser(Parser):
     def expr(self, p):
         pass
 
-    @_('LPAREN expr RPAREN')
-    def expr(self, p):
-        return p[1]
+    #@_('LPAREN expr RPAREN')
+    #def expr(self, p):
+    #    return UnaryOp(p[0],p[0])
 
     @_('ID LPAREN expr RPAREN')
     def expr(self, p):
@@ -297,13 +295,9 @@ class HOCParser(Parser):
     def expr(self, p):
         return BinaryOp(p[1], p[0], p[2])
 
-    @_('MINUS expr %prec UMINUS')
-    def expr(self, p):
-        return UnaryOp(p[0], p[1])
-
     @_('term')
     def expr(self, p):
-        pass
+        return p[0]
 
     @_('term TIMES fact')
     def term(self, p):
@@ -325,6 +319,14 @@ class HOCParser(Parser):
     def term(self, p):
         pass
 
+    @_('MINUS expr %prec UMINUS')
+    def fact(self, p):
+        return UnaryOp(p[0], p[1])
+
+    @_('LPAREN expr RPAREN')
+    def fact(self, p):
+        pass
+
     @_('INTEGER')
     def fact(self, p):
         return p[0]
@@ -340,7 +342,6 @@ class HOCParser(Parser):
     @_('ARG')
     def fact(self,p):
         return [p[0]]
-
 
     @_('expr')
     def prlist(self, p):
@@ -406,14 +407,6 @@ class HOCParser(Parser):
 
     @_('ID')
     def procname(self, p):
-        pass
-
-    @_('FUNCTION')
-    def procname(self,p):
-        pass
-
-    @_('PROCEDURE')
-    def procname(self,p):
         pass
 
     @_('empty')
