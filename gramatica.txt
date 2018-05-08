@@ -1,4 +1,3 @@
-%%
 list:	  /* nothing */
 	| list '\n'
 	| list defn '\n'
@@ -7,45 +6,35 @@ list:	  /* nothing */
 	| list expr '\n'  
 	| list error '\n' 
 	;
-asgn:	  VAR '=' expr 
-	| VAR ADDEQ expr	
-	| VAR SUBEQ expr	
-	| VAR MULEQ expr	
-	| VAR DIVEQ expr	
-	| VAR MODEQ expr
+
+asgn:	  ID '=' expr semi
+	| ID ADDEQ expr	semi
+	| ID SUBEQ expr	semi
+	| ID MULEQ expr	semi
+	| ID DIVEQ expr	semi
+	| ID MODEQ exprsemi
 	;
 
-stmt:	  expr
-	#definicion de variables y constantes
-	| 'var' VAR type '=' NUMBER
-	| 'var' VAR type
-	| FUNC procname '(' formals ')' type stmt
-	| PROC procname '(' formals ')' stmt
-	| 'const' VAR '=' NUMBER
-	| RETURN 
-	| RETURN expr        
-	| PROCEDURE begin '(' arglist ')'
-	| PRINT prlist	
-	| while '(' cond ')' stmt 
-	| for '(' cond ';' cond ';' cond ')' stmt end 
-	| if '(' cond ')' stmt end 
-	| if '(' cond ')' stmt end ELSE stmt end
+stmt:	  expr semi
+	| VAR ID type '=' number semi
+	| VAR ID type semi
+	| FUNC ID '(' formals ')' type stmt semi
+	| PROC ID '(' formals ')' stmt semi
+	| CONST ID '=' number semi
+	| RETURN semi
+	| RETURN expr semi       
+	| ID '(' arglist ')' semi
+	| PRINT prlist semi
+	| WHILE '(' cond ')' stmt 
+	| FOR '(' cond ';' cond ';' cond ')' stmt 
+	| IF '(' cond ')' stmt
+	| IF '(' cond ')' stmt ELSE stmt
 	| '{' stmtlist '}'	
 	;
+
 cond:	   expr 	
 	;
-while:	  WHILE	
-	;
-for:	  FOR	
-	;
-var:	VAR
-	;
-if:	  IF	
-	;
-begin:	  /* nothing */		
-	;
-end:	  /* nothing */		
-	;
+
 stmtlist: /* nothing */		
 	| stmtlist '\n'
 	| stmtlist stmt
@@ -55,34 +44,37 @@ type: 	  INT
 	| FLOAT
 	;
 
-expr:	  INTEGER
-	| NUMFLOAT 
-	| VAR	
+number: INTEGER
+	| NUMFLOAT
+	;
+
+expr:	  number
+	| ID	
 	| asgn
-	| FUNCTION begin '(' arglist ')'	
-	| READ '(' VAR ')' 
-	| BLTIN '(' expr ')' 
-	| '(' expr ')'	
-	| expr '+' expr	
-	| expr '-' expr	
-	| expr '*' expr	
-	| expr '/' expr	
-	| expr '%' expr	
-	| expr '^' expr	
-	| '-' expr   
-	| expr GT expr	
-	| expr GE expr	
-	| expr LT expr	
-	| expr LE expr	
-	| expr EQ expr	
-	| expr NE expr
-	| expr AND expr	
-	| expr OR expr	
-	| NOT expr	
-	| INC VAR	
-	| DEC VAR	
-	| VAR INC	
-	| VAR DEC	
+	| ID '(' arglist ')' semi	
+	| READ '(' ID ')' semi
+	| BLTIN '(' expr ')' semi
+	| '(' expr ')' semi	
+	| expr '+' expr	semi
+	| expr '-' expr	semi
+	| expr '*' expr	semi
+	| expr '/' expr	semi
+	| expr '%' expr	semi
+	| expr '^' expr	semi
+	| '-' expr semi
+	| expr GT expr semi
+	| expr GE expr semi
+	| expr LT expr semi
+	| expr LE expr semi
+	| expr EQ expr semi
+	| expr NE expr semi
+	| expr AND expr semi
+	| expr OR expr semi
+	| NOT expr semi
+	| INC ID semi
+	| DEC ID semi
+	| ID INC semi
+	| ID DEC semi
 	;
 	
 prlist:	  expr			
@@ -90,18 +82,20 @@ prlist:	  expr
 	| prlist ',' expr	
 	| prlist ',' STRING	
 	;
+
 defn: 
 	;
+
 formals:	
-	| VAR	type
-	| VAR ',' formals	
+	| ID	type
+	| ID ',' formals	
 	;
-procname: VAR
-	| FUNCTION
-	| PROCEDURE
-	;
+
 arglist:  /* nothing */ 	
 	| expr			
 	| arglist ',' expr	
 	;
-%%
+
+semi: /* nothing */
+	| ';'
+	;

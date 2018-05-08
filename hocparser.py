@@ -100,13 +100,10 @@ class HOCParser(Parser):
     def asgn(self, p):
         return AsgnIdExpr(p.ID, p.MODEQ, p.expr)
 
-    @_('VAR ID type ASSIGN INTEGER')
+    @_('VAR ID type ASSIGN expr')
     def stmt(self, p):
         return VarDeclaration(p[1], p[2], p[4])
 
-    @_('VAR ID type ASSIGN NUMFLOAT')
-    def stmt(self, p):
-        return VarDeclaration(p[1], p[2], p[4])
 
     @_('VAR ID type')
     def stmt(self, p):
@@ -144,7 +141,7 @@ class HOCParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('WHILE LPAREN cond RPAREN stmt')
+    @_('WHILE LPAREN cond RPAREN LBRACKET stmtlist RBRACKET')
     def stmt(self,p):
         pass
 
