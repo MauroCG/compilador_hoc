@@ -432,16 +432,13 @@ class HOCParser(Parser):
 
     def error(self, p):
         if p:
-            print("Syntax error at token", p.type, p.lineno, p.value)
-            # Just discard the token or tell the parser it's okay.
+            print(p.lineno, ": Syntax error at token ", p.value, "index: ", p.index)
         else:
             print("Syntax error at EOF")
         
 def parse(data, debug=0):
-    #print(parser.error)
+    print(parser.error)
     p = parser.parse(lexer.tokenize(data))
-    #print(parser.errorStatus)
-    print("sin errores\n")
     return p
 
 
@@ -453,7 +450,7 @@ if __name__ == '__main__':
     if(len(sys.argv)!=2):#Verifica la cantidad de argumentos a la hora de compilar si no son 2. "py 'fichero.py' 'archivo'"
         sys.stderr.write('Usage: "{}" "filename"\n'.format(sys.argv[0]))#permite que al al compilar indique que debe de darse el archivo de la forma python.exe "fichero.py" "Archivo a abrir, como un simple print"
         raise SystemExit(1)#termina el programa
-    file= open(sys.argv[1]).read()
+    file = open(sys.argv[1]).read()
     
-    p=parse(file)
+    p = parse(file)
     p.pprint()
