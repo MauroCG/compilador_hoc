@@ -88,7 +88,7 @@ defn:
 
 formals:	
 	| ID	type
-	| ID ',' formals	
+	| ID ',' type formals	
 	;
 
 arglist:  /* nothing */ 	

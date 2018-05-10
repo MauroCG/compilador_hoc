@@ -26,11 +26,11 @@ class HOCParser(Parser):
     def list(self, p):
         return
 
-    @_('list semi NEWLINE')
+    @_('list  NEWLINE')
     def list(self, p):
         return p.list
 
-    @_('list defn semi NEWLINE')
+    @_('list defn NEWLINE')
     def list(self, p):
         if(p.list is None):
             return ListaPrograma([p.defn], [], [], [], [])
@@ -38,7 +38,7 @@ class HOCParser(Parser):
             p.list.appendDefn(p.defn)
             return p.list
 
-    @_('list asgn semi NEWLINE')
+    @_('list asgn NEWLINE')
     def list(self, p):
         if(p.list is None):
             return ListaPrograma([], [p.asgn], [], [], [])
@@ -46,7 +46,7 @@ class HOCParser(Parser):
             p.list.appendAsgn(p.asgn)
             return p.list
 
-    @_('list stmt semi NEWLINE')
+    @_('list stmt NEWLINE')
     def list(self, p):
         if(p.list is None):
             return ListaPrograma([], [], [p.stmt], [], [])
@@ -55,7 +55,7 @@ class HOCParser(Parser):
             return p.list
 
 
-    @_('list expr semi NEWLINE')
+    @_('list expr NEWLINE')
     def list(self, p):
         if(p.list is None):
             return ListaPrograma([], [], [], [p.expr], [])
@@ -63,7 +63,7 @@ class HOCParser(Parser):
             p.list.appendExpr(p.expr)
             return p.list
 
-    @_('list error semi NEWLINE')
+    @_('list error NEWLINE')
     def list (self,p):
         if(p.list is None):
             return ListaPrograma([], [], [], [], [p.error])
@@ -71,81 +71,77 @@ class HOCParser(Parser):
             p.list.appendError(p.error)
             return p.list
 
-    @_('ARG ASSIGN expr')
+    @_('ARG ASSIGN expr ')
     def asgn(self,p):
         return AsgnARG(p.expr)
 
-    @_('ID ASSIGN expr')
+    @_('ID ASSIGN expr ')
     def asgn(self, p):
         return AsgnIdExpr(p.ID, p.ASSIGN, p.expr)
 
 
-    @_('ID ADDEQ expr')
+    @_('ID ADDEQ expr ')
     def asgn(self, p):
         return AsgnIdExpr(p.ID, p.ADDEQ, p.expr)
 
-    @_('ID SUBEQ expr')
+    @_('ID SUBEQ expr ')
     def asgn(self, p):
         return AsgnIdExpr(p.ID, p.SUBEQ, p.expr)
 
-    @_('ID MULEQ expr')
+    @_('ID MULEQ expr ')
     def asgn(self, p):
         return AsgnIdExpr(p.ID, p.MULEQ, p.expr)
 
-    @_('ID DIVEQ expr')
+    @_('ID DIVEQ expr ')
     def asgn(self, p):
         return AsgnIdExpr(p.ID, p.DIVEQ, p.expr)
 
-    @_('ID MODEQ expr')
+    @_('ID MODEQ expr ')
     def asgn(self, p):
         return AsgnIdExpr(p.ID, p.MODEQ, p.expr)
 
-    @_('VAR ID type ASSIGN expr')
+    @_('VAR ID type ASSIGN number ')
     def stmt(self, p):
         return VarDeclaration(p[1], p[2], p[4])
 
 
-    @_('VAR ID type')
+    @_('VAR ID type ')
     def stmt(self, p):
         pass#return VarDefinition(p.id, p.type)
 
-    @_('FUNC procname LPAREN formals RPAREN type LBRACKET stmtlist RBRACKET')
+    @_('FUNC ID LPAREN formals RPAREN type stmt ')
     def stmt(self, p):
         return FuncDecl(p[1], p[3], p[5], p[7])
 
-    @_('PROC procname LPAREN formals RPAREN LBRACKET stmtlist RBRACKET')
+    @_('PROC ID LPAREN formals RPAREN stmt ')
     def stmt(self, p):
         return ProcDecl(p[1], p[3], p[6])
 
-    @_('CONST ID ASSIGN INTEGER')
+    @_('CONST ID ASSIGN number ')
     def stmt(self, p):
         return ConstDeclaration(p[1], p[3])
 
-    @_('CONST ID ASSIGN FLOAT')
-    def stmt(self, p):
-        return ConstDeclaration(p[1], p[3])
-
-    @_('RETURN')
+    @_('RETURN ')
     def stmt(self, p):
         return Statement(p[0])
 
-    @_('RETURN expr')
+    @_('RETURN expr ')
     def stmt(self, p):
         pass
 
-    @_('PROCEDURE procname begin LPAREN arglist RPAREN')
-    def stmt(self, p):
-        return ProcCall(p[1],p[4])
-
-    @_('PRINT prlist')
+    @_('ID LPAREN arglist RPAREN ')
     def stmt(self, p):
         pass
 
-    @_('WHILE LPAREN cond RPAREN LBRACKET stmtlist RBRACKET')
+    @_('PRINT prlist ')
+    def stmt(self, p):
+        pass
+
+    @_('WHILE LPAREN cond RPAREN stmt')
     def stmt(self,p):
         pass
 
-    @_('FOR LPAREN cond COMMA cond COMMA cond RPAREN stmt end')
+    @_('FOR LPAREN cond COMMA cond COMMA cond RPAREN stmt')
     def stmt(self, p):
         pass
 
@@ -153,77 +149,29 @@ class HOCParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('IF LPAREN cond RPAREN LBRACKET stmtlist RBRACKET ELSE LBRACKET stmtlist RBRACKET')
-    def stmt(self, p):
-
-        pass
-
-    @_('IF LPAREN cond RPAREN LBRACKET stmtlist RBRACKET ELSE stmt')
+    @_('IF LPAREN cond RPAREN stmt ELSE stmt')
     def stmt(self, p):
         pass
+
+    @_('LBRACE stmtlist RBRACE')
 
     
 
-    @_('expr GT expr')
+    @_('expr')
     def cond(self, p):
         return RelationalOp(p[1], p[0], p[2])
 
-    @_('expr GE expr')
-    def cond(self, p):
-        return RelationalOp(p[1], p[0], p[2])
-
-    @_('expr LT expr')
-    def cond(self, p):
-        return RelationalOp(p[1], p[0], p[2])
-
-    @_('expr LE expr')
-    def cond(self, p):
-        return RelationalOp(p[1], p[0], p[2])
-
-    @_('expr EQ expr')
-    def cond(self, p):
-        return RelationalOp(p[1], p[0], p[2])
-
-    @_('expr NE expr')
-    def cond(self, p):
-        return RelationalOp(p[1], p[0], p[2])
-
-    @_('expr AND expr')
-    def cond(self, p):
-        return LogicalOp(p[1], p[0], p[2])
-
-    @_('expr OR expr')
-    def cond(self, p):
-        return LogicalOp(p[1], p[0], p[2])
-
-    @_('NOT expr')
-    def cond(self, p):
-        return UnaryOp(p[0], p[1])
 
     @_('empty')
-    def begin(self, p):
-        return Empty()
-
-    @_('empty')
-    def end(self, p):
-        return Empty()
-
-    @_('NEWLINE')
-    def stmtlist(self, p):
-        pass#return  Statements(p[0])
-
-    @_('stmt')
     def stmtlist(self, p):
         pass
+
     @_('stmtlist NEWLINE')
     def stmtlist(self, p):
         pass#return  Statements(p[0])
 
     @_('stmtlist stmt')
     def stmtlist(self, p):
-        '''stmlist = p[0]
-        stmlist.append(Statement(p[1]))
-        return  Statements(stmlist)'''
         pass
 
 
@@ -235,32 +183,43 @@ class HOCParser(Parser):
     def type(self, p):
         return p[0]
 
-    @_('empty')
-    def type(self, p):
+    @_('INTEGER')
+    def number(self, p):
         pass
 
-    @_('FUNCTION procname begin LPAREN arglist RPAREN')
-    def expr(self, p):
-        print ("lop")
-        return Funcall(p[1],[4])
-
-    @_('READ LPAREN ID RPAREN')
-    def expr(self, p):
+    @_('NUMFLOAT')
+    def number(self, p):
         pass
 
-    @_('BLTIN LPAREN expr RPAREN' )
+    @_('number')
     def expr(self, p):
         pass
 
-    #@_('LPAREN expr RPAREN')
-    #def expr(self, p):
-    #    return UnaryOp(p[0],p[0])
+    @_('ID')
+    def expr(self, p):
+        pass
 
-    @_('ID LPAREN expr RPAREN')
+    @_('asgn')
+    def expr(self, p):
+        pass
+
+    @_('READ LPAREN ID RPAREN ')
+    def expr(self, p):
+        pass
+
+    @_('BLTIN LPAREN expr RPAREN ' )
+    def expr(self, p):
+        pass
+
+    @_('LPAREN expr RPAREN ')
+    def expr(self, p):
+        return UnaryOp(p[0],p[0])
+
+    @_('ID LPAREN expr RPAREN ')
     def expr(self, p):
         return p[2]
 
-    @_('ID LPAREN RPAREN')
+    @_('ID LPAREN RPAREN ')
     def expr(self, p):
         return
 
@@ -268,77 +227,85 @@ class HOCParser(Parser):
     def expr(self, p):
         return
 
-    @_('INC ID')
+    @_('INC ID ')
     def expr(self, p):
         return UnaryOp(p[0], p[1])
 
-    @_('DEC ID')
+    @_('DEC ID ')
     def expr(self, p):
         return UnaryOp(p[0], p[1])
 
-    @_('ID INC')
+    @_('ID INC ')
     def expr(self, p):
         return UnaryOp(p[1], p[0])
 
-    @_('ID DEC')
+    @_('ID DEC ')
     def expr(self, p):
         return UnaryOp(p[1], p[0])
 
-    @_('expr PLUS term')
+    @_('expr PLUS expr ')
     def expr(self, p):
         return BinaryOp(p[1], p[0], p[2])
 
-    @_('expr MINUS term')
+    @_('expr MINUS expr ')
     def expr(self, p):
         return BinaryOp(p[1], p[0], p[2])
 
-    @_('term')
+    @_('expr TIMES expr ')
     def expr(self, p):
-        return p[0]
-
-    @_('term TIMES fact')
-    def term(self, p):
         return BinaryOp(p[1], p[0], p[2])
 
-    @_('term DIVIDE fact')
-    def term(self, p):
+    @_('expr DIVIDE expr ')
+    def expr(self, p):
         return BinaryOp(p[1], p[0], p[2])
 
-    @_('term MOD fact')
-    def term(self, p):
+    @_('expr MOD expr ')
+    def expr(self, p):
         return BinaryOp(p[1], p[0], p[2])
 
-    @_('term EXP fact')
-    def term(self, p):
+    @_('expr EXP expr ')
+    def expr(self, p):
         return BinaryOp(p[1], p[0], p[2])
-
-    @_('fact')
-    def term(self, p):
-        pass
 
     @_('MINUS expr %prec UMINUS')
-    def fact(self, p):
+    def expr(self, p):
         return UnaryOp(p[0], p[1])
 
-    @_('LPAREN expr RPAREN')
-    def fact(self, p):
-        pass
+    @_('expr GE expr ')
+    def expr(self, p):
+        return BinaryOp(p[1], p[0], p[2])
 
-    @_('INTEGER')
-    def fact(self, p):
-        return p[0]
+    @_('expr GT expr ')
+    def expr(self, p):
+        return BinaryOp(p[1], p[0], p[2])
 
-    @_('NUMFLOAT')
-    def fact(self, p):
-        return p[0]
+    @_('expr LT expr ')
+    def expr(self, p):
+        return BinaryOp(p[1], p[0], p[2])
 
-    @_('ID')
-    def fact(self, p):
-        return [p[0]]
+    @_('expr LE expr ')
+    def expr(self, p):
+        return BinaryOp(p[1], p[0], p[2])
 
-    @_('ARG')
-    def fact(self,p):
-        return [p[0]]
+    @_('expr EQ expr ')
+    def expr(self, p):
+        return BinaryOp(p[1], p[0], p[2])
+
+    @_('expr NE expr ')
+    def expr(self, p):
+        return BinaryOp(p[1], p[0], p[2])
+
+    @_('expr AND expr ')
+    def expr(self, p):
+        return BinaryOp(p[1], p[0], p[2])
+
+    @_('expr OR expr ')
+    def expr(self, p):
+        return BinaryOp(p[1], p[0], p[2])
+
+    @_('NOT expr ')
+    def expr(self, p):
+        return BinaryOp(p[1], p[0], p[2])
 
     @_('expr')
     def prlist(self, p):
@@ -394,16 +361,12 @@ class HOCParser(Parser):
     def formals(self, p):
         return Empty()
 
-    @_('FUNC procname')
+    @_('FUNC ID')
     def defn(self,p):
         pass
 
-    @_('PROC procname')
+    @_('PROC ID')
     def defn(self,p):
-        pass
-
-    @_('ID')
-    def procname(self, p):
         pass
 
     @_('empty')
@@ -416,13 +379,6 @@ class HOCParser(Parser):
 
     @_('arglist COMMA expr')
     def arglist(self, p):
-        pass
-
-    @_('SEMI')
-    def semi(self, p):
-        pass
-    @_('empty')
-    def semi(self, p):
         pass
 
     @_('')

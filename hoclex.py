@@ -6,7 +6,7 @@ class HOCLexer(Lexer):
     #-------------------------------------------------------------------------------
     # Conjunto de palabras reservadas. Este conjunto enumera todos los
     # nombres especiales utilizados en el lenguaje
-    keywords = { 'var','if','for','while','else','print','const','read',
+    keywords = { 'var','if','for','while','else', 'print','const','read',
     'proc','arg','func','return', 'bltin', 'int', 'float' }
 
     #--------------------------------------------------------------------------------
@@ -19,8 +19,6 @@ class HOCLexer(Lexer):
     # Identificadores
     'ID',
 
-    'FUNCTION','PROCEDURE',
-
     # Literales
     'INTEGER', 'NUMFLOAT', 'STRING', 'NEWLINE',
 
@@ -30,7 +28,7 @@ class HOCLexer(Lexer):
 
     # Delimitadores y otros símbolos
     'ASSIGN','LPAREN','RPAREN','COMMA', 'SEMI',
-    'LBRACKET','RBRACKET','GT','GE','LT','LE','EQ','NE'
+    'LBRACE','RBRACE','GT','GE','LT','LE','EQ','NE'
     }
 
 
@@ -144,8 +142,8 @@ class HOCLexer(Lexer):
     RPAREN = r'\)'
     COMMA = r','
     SEMI = r';'
-    LBRACKET = r'\{'
-    RBRACKET = r'\}'
+    LBRACE = r'\{'
+    RBRACE = r'\}'
 
 
     # Las palabras reservadas del lenguaje como "if" y "while" también se
