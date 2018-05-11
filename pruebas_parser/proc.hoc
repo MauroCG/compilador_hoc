@@ -1,11 +1,12 @@
-proc pr(){
-        print 3
-        print 1*2
-        print "hola mundo"
+proc pri(x int, y float) {
+        print 3;
+        print x*y
+        print "hola mundo";
 }
 
-proc printsquare() {
-   var x int = a1
-   print x*x
+proc printsquare(a1 int) {
+   var x int = a1+5*PI-fibo(a1)
+   print x*x;
  }
-printsquare(5)
+
+ pri(3, 200);

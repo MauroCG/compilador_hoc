@@ -1,5 +1,5 @@
-1+1{}
-1 + 1{}
+1+1
+1 + 1
 (1+1)
 (1 + 1)
 1+1*2
@@ -13,9 +13,11 @@
 (3+2)*12
 (3*2)^2
 (30%5)%2
-var x float = 2.1
+var x float = 2.1112
+x += x++
+x %= x^(fibo(x*x-x)+PI)/100
 print 2+2
-proc hola {
+proc hola () {
 	print "hola"
 }
 hola()

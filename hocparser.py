@@ -100,11 +100,7 @@ class HOCParser(Parser):
     def asgn(self, p):
         return AsgnIdExpr(p.ID, p.MODEQ, p.expr)
 
-    @_('VAR ID type ASSIGN INTEGER')
-    def stmt(self, p):
-        return VarDeclaration(p[1], p[2], p[4])
-
-    @_('VAR ID type ASSIGN NUMFLOAT')
+    @_('VAR ID type ASSIGN expr')
     def stmt(self, p):
         return VarDeclaration(p[1], p[2], p[4])
 
@@ -204,7 +200,7 @@ class HOCParser(Parser):
     def cond(self, p):
         return LogicalOp(p[1], p[0], p[2])
 
-    @_('NOT expr')
+    @_('NOT expr semi')
     def cond(self, p):
         return UnaryOp(p[0], p[1])
 
@@ -212,15 +208,15 @@ class HOCParser(Parser):
     def stmtlist(self, p):
         pass#return  Statements(p[0])
 
-    '''@_('stmt')
+    @_('stmt semi')
     def stmtlist(self, p):
-        pass'''
+        pass
 
     @_('stmtlist NEWLINE')
     def stmtlist(self, p):
         pass#return  Statements(p[0])
 
-    @_('stmtlist stmt')
+    @_('stmtlist stmt semi')
     def stmtlist(self, p):
         '''stmlist = p[0]
         stmlist.append(Statement(p[1]))
@@ -242,8 +238,9 @@ class HOCParser(Parser):
 
     @_('ID LPAREN arglist RPAREN')
     def expr(self, p):
-        print ("lop")
-        return Funcall(p[1],[4])
+        '''print ("lop")
+        return Funcall(p[1],[4])'''
+        pass
 
     @_('READ LPAREN ID RPAREN')
     def expr(self, p):
@@ -257,13 +254,6 @@ class HOCParser(Parser):
     #def expr(self, p):
     #    return UnaryOp(p[0],p[0])
 
-    @_('ID LPAREN expr RPAREN')
-    def expr(self, p):
-        return p[2]
-
-    @_('ID LPAREN RPAREN')
-    def expr(self, p):
-        return
 
     @_('LPAREN RPAREN')
     def expr(self, p):
@@ -301,6 +291,14 @@ class HOCParser(Parser):
     @_('term')
     def expr(self, p):
         return p[0]
+
+    @_('ID LPAREN expr RPAREN')
+    def term(self, p):
+        return p[2]
+
+    @_('ID LPAREN RPAREN')
+    def term(self, p):
+        return
 
     @_('term TIMES fact')
     def term(self, p):
@@ -388,9 +386,10 @@ class HOCParser(Parser):
 
     @_('ID type COMMA formals')
     def formals(self, p):
-        flist = p[2]
+        '''flist = p[2]
         flist.append(p[0])
-        return Parameters(flist)
+        return Parameters(flist)'''
+        pass
 
     @_('empty')
     def formals(self, p):
@@ -435,7 +434,7 @@ class HOCParser(Parser):
 
     def error(self, p):
         if p:
-            print("Syntax error at token", p.type, p.lineno, p.value)
+            print(p.lineno, ": Syntax error at token", p.value, "index: ", p.index)
             # Just discard the token or tell the parser it's okay.
         else:
             print("Syntax error at EOF")
@@ -444,7 +443,7 @@ def parse(data, debug=0):
     #print(parser.error)
     p = parser.parse(lexer.tokenize(data))
     #print(parser.errorStatus)
-    print("sin errores\n")
+    print("\n")
     return p
 
 
