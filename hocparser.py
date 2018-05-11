@@ -112,11 +112,11 @@ class HOCParser(Parser):
     def stmt(self, p):
         pass#return VarDefinition(p.id, p.type)
 
-    @_('FUNC procname LPAREN formals RPAREN type LBRACE stmtlist RBRACE')
+    @_('FUNC ID LPAREN formals RPAREN type LBRACE stmtlist RBRACE')
     def stmt(self, p):
         return FuncDecl(p[1], p[3], p[5], p[7])
 
-    @_('PROC procname LPAREN formals RPAREN LBRACE stmtlist RBRACE')
+    @_('PROC ID LPAREN formals RPAREN LBRACE stmtlist RBRACE')
     def stmt(self, p):
         return ProcDecl(p[1], p[3], p[6])
 
@@ -124,7 +124,7 @@ class HOCParser(Parser):
     def stmt(self, p):
         return ConstDeclaration(p[1], p[3])
 
-    @_('CONST ID ASSIGN FLOAT')
+    @_('CONST ID ASSIGN NUMFLOAT')
     def stmt(self, p):
         return ConstDeclaration(p[1], p[3])
 
@@ -136,19 +136,27 @@ class HOCParser(Parser):
     def stmt(self, p):
         pass
 
-    @_('PROCEDURE procname begin LPAREN arglist RPAREN')
-    def stmt(self, p):
-        return ProcCall(p[1],p[4])
-
     @_('PRINT prlist')
     def stmt(self, p):
+        pass
+
+    @_('WHILE LPAREN cond RPAREN LBRACE stmtlist RBRACE')
+    def stmt(self,p):
         pass
 
     @_('WHILE LPAREN cond RPAREN stmt')
     def stmt(self,p):
         pass
 
-    @_('FOR LPAREN cond COMMA cond COMMA cond RPAREN stmt end')
+    @_('FOR LPAREN cond COMMA cond COMMA cond RPAREN LBRACE stmtlist RBRACE')
+    def stmt(self, p):
+        pass
+
+    @_('FOR LPAREN cond COMMA cond COMMA cond RPAREN stmt')
+    def stmt(self, p):
+        pass
+
+    @_('IF LPAREN cond RPAREN LBRACE stmtlist RBRACE')
     def stmt(self, p):
         pass
 
@@ -158,14 +166,11 @@ class HOCParser(Parser):
 
     @_('IF LPAREN cond RPAREN LBRACE stmtlist RBRACE ELSE LBRACE stmtlist RBRACE')
     def stmt(self, p):
-
         pass
 
     @_('IF LPAREN cond RPAREN LBRACE stmtlist RBRACE ELSE stmt')
     def stmt(self, p):
-        pass
-
-    
+        pass    
 
     @_('expr GT expr')
     def cond(self, p):
@@ -203,21 +208,14 @@ class HOCParser(Parser):
     def cond(self, p):
         return UnaryOp(p[0], p[1])
 
-    @_('empty')
-    def begin(self, p):
-        return Empty()
-
-    @_('empty')
-    def end(self, p):
-        return Empty()
-
     @_('NEWLINE')
     def stmtlist(self, p):
         pass#return  Statements(p[0])
 
-    @_('stmt')
+    '''@_('stmt')
     def stmtlist(self, p):
-        pass
+        pass'''
+
     @_('stmtlist NEWLINE')
     def stmtlist(self, p):
         pass#return  Statements(p[0])
@@ -242,7 +240,7 @@ class HOCParser(Parser):
     def type(self, p):
         pass
 
-    @_('FUNCTION procname begin LPAREN arglist RPAREN')
+    @_('ID LPAREN arglist RPAREN')
     def expr(self, p):
         print ("lop")
         return Funcall(p[1],[4])
@@ -295,6 +293,11 @@ class HOCParser(Parser):
     def expr(self, p):
         return BinaryOp(p[1], p[0], p[2])
 
+    @_('MINUS expr %prec UMINUS')
+    def expr(self, p):
+        return UnaryOp(p[0], p[1])
+
+
     @_('term')
     def expr(self, p):
         return p[0]
@@ -318,10 +321,6 @@ class HOCParser(Parser):
     @_('fact')
     def term(self, p):
         pass
-
-    @_('MINUS expr %prec UMINUS')
-    def fact(self, p):
-        return UnaryOp(p[0], p[1])
 
     @_('LPAREN expr RPAREN')
     def fact(self, p):
@@ -424,6 +423,7 @@ class HOCParser(Parser):
     @_('SEMI')
     def semi(self, p):
         pass
+        
     @_('empty')
     def semi(self, p):
         pass

@@ -19,8 +19,6 @@ class HOCLexer(Lexer):
     # Identificadores
     'ID',
 
-    'FUNCTION','PROCEDURE',
-
     # Literales
     'INTEGER', 'NUMFLOAT', 'STRING', 'NEWLINE',
 
