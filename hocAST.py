@@ -111,6 +111,18 @@ class Stmtlist(AST):
                 self.stmtlist.append(stmt)
 
 
+class Expr(AST):
+        _fields = ['expr']
+
+
+@validate_fields(arglist=list)
+class Arglist(AST):
+        _fields = ['arglist']
+
+        def append(self, expr):
+                self.arglist.append(expr)
+
+
 
 
 
@@ -332,10 +344,15 @@ class DotVisitor(NodeVisitor):
                         value=getattr(node,field,None)
                         if isinstance (value,list):
                                 for item in value:
-                                        self.dot.add_edge(pgv.Edge(id,self.st.pop()))
+                                        if len(self.st) == 0:
+                                                pass
+                                        else:
+                                                self.dot.add_edge(pgv.Edge(id,self.st.pop()))
                         elif isinstance(value,AST):
-                                self.dot.add_edge(pgv.Edge(id))
-                                self.st.pop()
+                                if len(self.st) == 0:
+                                        self.dot.add_edge(pgv.Edge(id))
+                                else:
+                                        self.dot.add_edge(pgv.Edge(id, self.st.pop()))
                         elif value:
                                 label += '\\n' + '({}={})'.format(field,value)
 

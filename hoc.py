@@ -30,18 +30,22 @@ class Facade(object):
 		self.parser.parse(self.lex.tokenize(self.codehoc))
 
 	def ast(self):
-		p = self.parser.parse(self.lex.tokenize(self.codehoc))
-		p.pprint()
+		ast = self.parser.parse(self.lex.tokenize(self.codehoc))
+		ast.pprint()
 
 
 def main():
 	parser = argparse.ArgumentParser()
+	parser.add_argument("--lex", help='Muestra el analísis léxico del Código')
 	parser.add_argument("codigo", help="Código a compilar, con extensión .hoc")
 	args = parser.parse_args()
 	codehoc = args.codigo
 	text = open(codehoc).read()
-	op = Menu()
 	facade = Facade(text)
+	if args.lex is not None:
+		facade.lexico()
+		return
+	op = Menu()
 	if op == 1:
 		facade.lexico()
 	elif op == 2:

@@ -9,5 +9,5 @@ func fibo(n int) int {
 print "Cuarto número de la secuencia de fibonacci: ", fib(4)
 
 //prueba función con múltiples paeameteos
-fib(1,2,3,4,5,6)
+fibo(4)
 

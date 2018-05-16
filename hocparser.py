@@ -243,9 +243,6 @@ class HOCParser(Parser):
     def type(self, p):
         pass
 
-    @_('ID LPAREN arglist RPAREN')
-    def expr(self, p):
-        return FuncCall(p[0], p[2])
 
     @_('READ LPAREN ID RPAREN')
     def expr(self, p):
@@ -255,14 +252,10 @@ class HOCParser(Parser):
     def expr(self, p):
         pass
 
-    #@_('LPAREN expr RPAREN')
-    #def expr(self, p):
-    #    return UnaryOp(p[0],p[0])
 
-
-    @_('LPAREN RPAREN')
+    '''@_('LPAREN RPAREN')
     def expr(self, p):
-        return
+        return'''
 
     @_('INC ID')
     def expr(self, p):
@@ -297,13 +290,13 @@ class HOCParser(Parser):
     def expr(self, p):
         return p[0]
 
-    @_('ID LPAREN expr RPAREN')
+    @_('ID LPAREN arglist RPAREN')
     def term(self, p):
-        return p[2]
+        return FuncCall(p[0], p[2])
 
     @_('ID LPAREN RPAREN')
     def term(self, p):
-        return
+        return FuncCall(p[0], None)
 
     @_('term TIMES fact')
     def term(self, p):
@@ -414,15 +407,20 @@ class HOCParser(Parser):
 
     @_('empty')
     def arglist(self, p):
-        return Empty()
+        pass
 
     @_('expr')
     def arglist(self, p):
-        pass
+        return Arglist([p[0]])
 
     @_('arglist COMMA expr')
     def arglist(self, p):
-        pass
+        if p.arglist is None:
+            plist = [p[2]]
+            return Arglist(plist)
+        else:
+            p.arglist.append(p[2])
+            return p.arglist
 
     @_('SEMI')
     def semi(self, p):
