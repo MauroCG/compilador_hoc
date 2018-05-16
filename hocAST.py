@@ -1,6 +1,9 @@
 
 # mpasast.py
 # -*- coding: utf-8 -*-
+import pydot as pgv
+
+
 '''
 Objetos Arbol de Sintaxis Abstracto (AST - Abstract Syntax Tree).
 
@@ -94,6 +97,19 @@ class FuncDecl(AST):
 class ProcDecl(AST):
         _fields = ['name', 'params', 'stmtlist']
 
+class If1Stmt(AST):
+        _fields = ['cond', 'stmt']
+
+class FuncCall(AST):
+        _fields = ['func_name', 'arglist']
+
+@validate_fields(stmtlist=list)
+class Stmtlist(AST):
+        _fields = ['stmtlist']
+
+        def append(self, stmt):
+                self.stmtlist.append(stmt)
+
 
 
 
@@ -121,7 +137,7 @@ class Statements(AST):
                 self.statements.append(e)
 
 class Statement(AST):
-        _fields = ['statement']
+        _fields = ['statement', 'expr']
 
 class Extern(AST):
         _fields = ['func_prototype']
@@ -285,6 +301,50 @@ class NodeTransformer(NodeVisitor):
                                         setattr(node,field,newnode)
                 return node
 
+
+
+#class to print the dot AST
+class DotVisitor(NodeVisitor):
+
+        '''
+        Crea archivo tipo 'dot' para Graphiz
+        '''
+        def __init__(self):
+                self.dot =pgv.Dot('AST',graph_type='digraph')
+                '''creamos un obj del tipo dot que se va a llamar AST'''
+                #self.dot.set_node_default(shape='box')
+                self.st = []
+                self.id =0
+
+        def __repr__(self):
+                return self.dot.to_string()
+
+        def name(self):
+                self.id+=1
+                return 'n%02d' % self.id
+
+        def generic_visit(self,node): 
+                #siempre va a pasar poraca cada vez queeste en un nodo
+                id = self.name()    
+                label = node.__class__.__name__
+                NodeVisitor.generic_visit(self,node)
+                for field in getattr(node,'_fields'):
+                        value=getattr(node,field,None)
+                        if isinstance (value,list):
+                                for item in value:
+                                        self.dot.add_edge(pgv.Edge(id,self.st.pop()))
+                        elif isinstance(value,AST):
+                                self.dot.add_edge(pgv.Edge(id))
+                                self.st.pop()
+                        elif value:
+                                label += '\\n' + '({}={})'.format(field,value)
+
+                self.dot.add_node(pgv.Node(id,label=label))
+                self.st.append(id)
+
+
+
+
 # NO MODIFICAR
 def flatten(top):
         '''
@@ -298,12 +358,16 @@ def flatten(top):
                 def __init__(self):
                         self.depth = 0
                         self.nodes = []
-                def generic_visit(self,node):
-                        self.nodes.append((self.depth,node))
+
+                def generic_visit(self, node):
+                        self.nodes.append((self.depth, node))
                         self.depth += 1
-                        NodeVisitor.generic_visit(self,node)
+                        NodeVisitor.generic_visit(self, node)
                         self.depth -= 1
 
+        dot = DotVisitor()
+        dot.visit(top)
+        print(dot)
         d = Flattener()
         d.visit(top)
         return d.nodes

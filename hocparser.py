@@ -1,4 +1,6 @@
 from sly import Parser
+
+
 from hoclex import HOCLexer
 from hocAST import *
 
@@ -126,15 +128,15 @@ class HOCParser(Parser):
 
     @_('RETURN')
     def stmt(self, p):
-        return Statement(p[0])
+        pass
 
     @_('RETURN expr')
     def stmt(self, p):
-        pass
+        return Statement(p[0], p[1])
 
     @_('PRINT prlist')
     def stmt(self, p):
-        pass
+        return Statement(p[0], p[1])
 
     @_('WHILE LPAREN cond RPAREN LBRACE stmtlist RBRACE')
     def stmt(self,p):
@@ -158,7 +160,7 @@ class HOCParser(Parser):
 
     @_('IF LPAREN cond RPAREN stmt')
     def stmt(self, p):
-        pass
+        return If1Stmt(p[2], p[4])
 
     @_('IF LPAREN cond RPAREN LBRACE stmtlist RBRACE ELSE LBRACE stmtlist RBRACE')
     def stmt(self, p):
@@ -206,22 +208,27 @@ class HOCParser(Parser):
 
     @_('NEWLINE')
     def stmtlist(self, p):
-        pass#return  Statements(p[0])
+        pass
 
     @_('stmt semi')
     def stmtlist(self, p):
-        pass
+        return Stmtlist([p[0]])
 
     @_('stmtlist NEWLINE')
     def stmtlist(self, p):
-        pass#return  Statements(p[0])
+        if p.stmtlist is None:
+            return Stmtlist([])
+        else:
+            return p[0]
 
     @_('stmtlist stmt semi')
     def stmtlist(self, p):
-        '''stmlist = p[0]
-        stmlist.append(Statement(p[1]))
-        return  Statements(stmlist)'''
-        pass
+        if p.stmtlist is None:
+            plist = [p[1]]
+            return Stmtlist(plist)
+        else:
+            p[0].append(p[1])
+            return p[0]
 
 
     @_('INT')
@@ -238,9 +245,7 @@ class HOCParser(Parser):
 
     @_('ID LPAREN arglist RPAREN')
     def expr(self, p):
-        '''print ("lop")
-        return Funcall(p[1],[4])'''
-        pass
+        return FuncCall(p[0], p[2])
 
     @_('READ LPAREN ID RPAREN')
     def expr(self, p):
