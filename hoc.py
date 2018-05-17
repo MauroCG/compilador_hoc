@@ -35,16 +35,35 @@ class Facade(object):
 
 
 def main():
-	parser = argparse.ArgumentParser()
-	parser.add_argument("--lex", help='Muestra el analísis léxico del Código')
+	parser = argparse.ArgumentParser(description="Ayuda en las etapas de compilación, permitiendo mostrar cada una por separado")
+	group = parser.add_mutually_exclusive_group()
+
+	group.add_argument("-l", "--lex", help='Muestra el analísis léxico del Código pasado',
+	action='store_true')
+	group.add_argument("-p", "--parse", help='Muestra el analísis sintáctico del Código pasado',
+	action='store_true')
+	group.add_argument("-a", "--ast", help='Muestra el AST del código pasado',
+	action='store_true')
+
 	parser.add_argument("codigo", help="Código a compilar, con extensión .hoc")
 	args = parser.parse_args()
+
 	codehoc = args.codigo
 	text = open(codehoc).read()
 	facade = Facade(text)
-	if args.lex is not None:
+
+	if args.lex:
 		facade.lexico()
 		return
+
+	if args.parse:
+		facade.sintactico()
+		return
+
+	if args.ast:
+		facade.ast()
+		return
+
 	op = Menu()
 	if op == 1:
 		facade.lexico()
@@ -58,5 +77,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-
-
