@@ -311,7 +311,7 @@ class HOCParser(Parser):
 
     @_('fact')
     def term(self, p):
-        pass
+        return p[0]
 
     @_('LPAREN expr RPAREN')
     def fact(self, p):
@@ -327,77 +327,86 @@ class HOCParser(Parser):
 
     @_('ID')
     def fact(self, p):
-        return [p[0]]
+        return p[0]
 
     @_('ARG')
     def fact(self,p):
-        return [p[0]]
+        return p[0]
 
     @_('expr')
     def prlist(self, p):
-        return PrintStatement(p[0])
+        return PrintStatement([p[0]])
 
     @_('STRING')
     def prlist(self, p):
-        return PrintStatement(p[0])
+        return Prilist([p[0]])
 
     @_('LPAREN STRING RPAREN')
     def prlist(self, p):
-        return PrintStatement(p[0])
+        return Prilist([p[1]])
 
     @_('LPAREN prlist COMMA expr RPAREN')
     def prlist(self, p):
-        '''plist = p[0]
-        plist.append(p[2])
-        return PrintStatement(plist)'''
-        pass
+        if p.prlist is None:
+            return Prilist([p[3]])
+        else:
+            plist = p[1]
+            plist.append(p[3])
+            return plist
 
     @_('LPAREN prlist COMMA STRING RPAREN')
     def prlist(self, p):
-        '''plist = p[0]
-        plist.append(p[2])
-        return PrintStatement(plist)'''
-        pass
+        if p.prlist is None:
+            return Prilist([p[3]])
+        else:
+            plist = p[1]
+            plist.append(p[3])
+            return plist
 
     @_('prlist COMMA expr')
     def prlist(self, p):
-        '''plist = p[0]
-        plist.append(p[2])
-        return PrintStatement(plist)'''
-        pass
+        if p.prlist is None:
+            return Prilist([p[2]])
+        else:
+            plist = p[0]
+            plist.append(p[2])
+            return plist
 
     @_('prlist COMMA STRING')
     def prlist(self, p):
-        '''plist = p[0]
-        plist.append(p[2])
-        return PrintStatement(plist)'''
-        pass
+        if p.prlist is None:
+            return Prilist([p[2]])
+        else:
+            plist = p[0]
+            plist.append(p[2])
+            return plist
 
     @_('ID type')
     def formals(self, p):
-        return ParamDecl(p[0], p[1])
+        param = ParamDecl(p[0], p[1])
+        return Parameters([param])
 
     @_('ID type COMMA formals')
     def formals(self, p):
-        '''flist = p[2]
-        flist.append(p[0])
-        return Parameters(flist)'''
-        pass
+        if p.formals is None:
+            param = ParamDecl(p[0], p[1])
+            return Parameters([param])
+        else:
+            plist = p.formals
+            param = ParamDecl(p[0], p[1])
+            plist.append(param)
+            return plist
 
     @_('empty')
     def formals(self, p):
-        return Empty()
+        pass
 
-    @_('FUNC procname')
+    @_('FUNC ID')
     def defn(self,p):
         pass
 
-    @_('PROC procname')
+    @_('PROC ID')
     def defn(self,p):
-        pass
-
-    @_('ID')
-    def procname(self, p):
         pass
 
     @_('empty')

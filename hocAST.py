@@ -88,6 +88,9 @@ class AsgnARG(AST):
 class VarDeclaration(AST):
         _fields = ['id', 'type', 'value']
 
+class ConstDeclaration(AST):
+        _fields = ['id', 'value']
+
 class VarDefinition(AST):
         _fields = ['id', 'type']
 
@@ -96,6 +99,16 @@ class FuncDecl(AST):
 
 class ProcDecl(AST):
         _fields = ['name', 'params', 'stmtlist']
+
+@validate_fields(param_decls=list)
+class Parameters(AST):
+        _fields = ['param_decls']
+
+        def append(self,e):
+                self.param_decls.append(e)
+
+class ParamDecl(AST):
+        _fields = ['id', 'typename']
 
 class IfStatement(AST):
         _fields = ['condition', 'then_b', 'else_b']
@@ -112,6 +125,9 @@ class ForStatement(AST):
 class FuncCall(AST):
         _fields = ['func_name', 'arglist']
 
+class ProcCall(AST):
+        _fields = ['id', 'params']
+
 @validate_fields(stmtlist=list)
 class Stmtlist(AST):
         _fields = ['stmtlist']
@@ -121,6 +137,16 @@ class Stmtlist(AST):
 
 class Statement(AST):
         _fields = ['statement', 'expr']
+
+@validate_fields(listexpr=list)
+class Prilist(AST):
+        '''
+        print expression ;
+        '''
+        _fields = ['listexpr']
+
+        def append(self, expr):
+              self.listexpr.append(expr)  
 
 class Read(AST):
         _fields = ['id']
@@ -139,15 +165,26 @@ class Arglist(AST):
         def append(self, expr):
                 self.arglist.append(expr)
 
+class UnaryOp(AST):
+        _fields = ['op', 'left']
+
+class BinaryOp(AST):
+        _fields = ['op', 'left', 'right']
+
+class RelationalOp(AST):
+        _fields = ['op', 'left', 'right']
+
+class LogicalOp(AST):
+        _fields = ['op', 'left', 'right']
 
 
 
 
-class PrintStatement(AST):
-        '''
-        print expression ;
-        '''
-        _fields = ['expr']
+
+
+
+
+
 
 class Literal(AST):
         '''
@@ -171,21 +208,9 @@ class Extern(AST):
 class FuncPrototype(AST):
         _fields = ['id', 'params', 'typename']
 
-@validate_fields(param_decls=list)
-class Parameters(AST):
-        _fields = ['param_decls']
-
-        def append(self,e):
-                self.param_decls.append(e)
-
-class ParamDecl(AST):
-        _fields = ['id', 'typename']
 
 class AssignmentStatement(AST):
         _fields = ['location', 'value']
-
-class ConstDeclaration(AST):
-        _fields = ['id', 'value']
 
 
 class LoadLocation(AST):
@@ -194,23 +219,8 @@ class LoadLocation(AST):
 class StoreVar(AST):
         _fields = ['name']
 
-class UnaryOp(AST):
-        _fields = ['op', 'left']
-
-class BinaryOp(AST):
-        _fields = ['op', 'left', 'right']
-
-class RelationalOp(AST):
-        _fields = ['op', 'left', 'right']
-
 class Group(AST):
         _fields = ['expression']
-
-class FunCall(AST):
-        _fields = ['id', 'params']
-
-class ProcCall(AST):
-        _fields = ['id', 'params']
 
 class ExprList(AST):
         _fields = ['expressions']
@@ -225,9 +235,6 @@ class Empty(AST):
 # Usted deberá añadir mas nodos aquí.  Algunos nodos sugeridos son
 # BinaryOperator, UnaryOperator, ConstDeclaration, VarDeclaration,
 # AssignmentStatement, etc...
-
-class LogicalOp(AST):
-        _fields = ['op', 'left', 'right']
 
 # ----------------------------------------------------------------------
 #                  NO MODIFIQUE NADA AQUI ABAJO
