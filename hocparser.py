@@ -108,7 +108,7 @@ class HOCParser(Parser):
 
     @_('VAR ID type')
     def stmt(self, p):
-        pass#return VarDefinition(p.id, p.type)
+        return VarDefinition(p[1], p[2])
 
     @_('FUNC ID LPAREN formals RPAREN type LBRACE stmtlist RBRACE')
     def stmt(self, p):
@@ -128,7 +128,7 @@ class HOCParser(Parser):
 
     @_('RETURN')
     def stmt(self, p):
-        pass
+        return Statement(p[0], None)
 
     @_('RETURN expr')
     def stmt(self, p):
@@ -144,19 +144,19 @@ class HOCParser(Parser):
 
     @_('WHILE LPAREN cond RPAREN stmt')
     def stmt(self,p):
-        pass
+        return WhilleStatement(p[2], p[4])
 
     @_('FOR LPAREN cond COMMA cond COMMA cond RPAREN LBRACE stmtlist RBRACE')
     def stmt(self, p):
-        pass
+        return ForStatement(p[2], p[4], p[6], p[9])
 
     @_('FOR LPAREN cond COMMA cond COMMA cond RPAREN stmt')
     def stmt(self, p):
-        pass
+        return ForStatement(p[2], p[4], p[6], p[9])
 
     @_('IF LPAREN cond RPAREN LBRACE stmtlist RBRACE')
     def stmt(self, p):
-        pass
+        return If1Stament(p[2], p[5], None)
 
     @_('IF LPAREN cond RPAREN stmt')
     def stmt(self, p):
@@ -164,11 +164,11 @@ class HOCParser(Parser):
 
     @_('IF LPAREN cond RPAREN LBRACE stmtlist RBRACE ELSE LBRACE stmtlist RBRACE')
     def stmt(self, p):
-        pass
+        return If1Stament(p[2], p[5], p[9])
 
     @_('IF LPAREN cond RPAREN LBRACE stmtlist RBRACE ELSE stmt')
     def stmt(self, p):
-        pass    
+         return If1Stament(p[2], p[5], p[9])   
 
     @_('expr GT expr')
     def cond(self, p):
@@ -246,16 +246,11 @@ class HOCParser(Parser):
 
     @_('READ LPAREN ID RPAREN')
     def expr(self, p):
-        pass
+        return Read(p[2])
 
     @_('BLTIN LPAREN expr RPAREN' )
     def expr(self, p):
-        pass
-
-
-    '''@_('LPAREN RPAREN')
-    def expr(self, p):
-        return'''
+        return Bltin(p[2])
 
     @_('INC ID')
     def expr(self, p):
@@ -320,7 +315,7 @@ class HOCParser(Parser):
 
     @_('LPAREN expr RPAREN')
     def fact(self, p):
-        pass
+        return Expr(p[1])
 
     @_('INTEGER')
     def fact(self, p):

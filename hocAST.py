@@ -97,8 +97,17 @@ class FuncDecl(AST):
 class ProcDecl(AST):
         _fields = ['name', 'params', 'stmtlist']
 
+class IfStatement(AST):
+        _fields = ['condition', 'then_b', 'else_b']
+
 class If1Stmt(AST):
         _fields = ['cond', 'stmt']
+
+class WhileStatement(AST):
+        _fields = ['condition', 'body']
+
+class ForStatement(AST):
+        _fields = ['cond1', 'cond2', 'ocnd3', 'body']
 
 class FuncCall(AST):
         _fields = ['func_name', 'arglist']
@@ -110,6 +119,14 @@ class Stmtlist(AST):
         def append(self, stmt):
                 self.stmtlist.append(stmt)
 
+class Statement(AST):
+        _fields = ['statement', 'expr']
+
+class Read(AST):
+        _fields = ['id']
+
+class Bltin(AST):
+        _fields = ['expr']
 
 class Expr(AST):
         _fields = ['expr']
@@ -148,9 +165,6 @@ class Statements(AST):
         def append(self,e):
                 self.statements.append(e)
 
-class Statement(AST):
-        _fields = ['statement', 'expr']
-
 class Extern(AST):
         _fields = ['func_prototype']
 
@@ -173,11 +187,6 @@ class AssignmentStatement(AST):
 class ConstDeclaration(AST):
         _fields = ['id', 'value']
 
-class IfStatement(AST):
-        _fields = ['condition', 'then_b', 'else_b']
-
-class WhileStatement(AST):
-        _fields = ['condition', 'body']
 
 class LoadLocation(AST):
         _fields = ['name']
