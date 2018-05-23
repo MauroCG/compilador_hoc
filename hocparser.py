@@ -4,24 +4,25 @@ from sly import Parser
 from hoclex import HOCLexer
 from hocAST import *
 
+
 class HOCParser(Parser):
 
-    debugfile='parser.out'
+    debugfile = 'parser.out'
     tokens = HOCLexer.tokens
 
-    precedence =(
-        ('right','ASSIGN'),
-        ('left','OR'),
-        ('left','AND'),
-        ('left','EQ','NE'),
-        ('left','LT','LE'),
-        ('left','GT','GE'),
-        ('left','PLUS','MINUS'),
-        ('left','TIMES','DIVIDE','MOD'),
+    precedence = (
+        ('right', 'ASSIGN'),
+        ('left', 'OR'),
+        ('left', 'AND'),
+        ('left', 'EQ', 'NE'),
+        ('left', 'LT', 'LE'),
+        ('left', 'GT', 'GE'),
+        ('left', 'PLUS', 'MINUS'),
+        ('left', 'TIMES', 'DIVIDE', 'MOD'),
         ('right', 'UMINUS'),
-        ('left','NOT'),
-        ('left','LPAREN','RPAREN'),
-        ('right','EXP')
+        ('left', 'NOT'),
+        ('left', 'LPAREN', 'RPAREN'),
+        ('right', 'EXP')
     )
 
     @_('empty')
@@ -56,7 +57,6 @@ class HOCParser(Parser):
             p.list.appendStmt(p.stmt)
             return p.list
 
-
     @_('list expr semi NEWLINE')
     def list(self, p):
         if(p.list is None):
@@ -66,7 +66,7 @@ class HOCParser(Parser):
             return p.list
 
     @_('list error semi NEWLINE')
-    def list (self,p):
+    def list(self, p):
         if(p.list is None):
             return ListaPrograma([], [], [], [], [p.error])
         else:
@@ -74,13 +74,12 @@ class HOCParser(Parser):
             return p.list
 
     @_('ARG ASSIGN expr')
-    def asgn(self,p):
+    def asgn(self, p):
         return AsgnARG(p.expr)
 
     @_('ID ASSIGN expr')
     def asgn(self, p):
         return AsgnIdExpr(p.ID, p.ASSIGN, p.expr)
-
 
     @_('ID ADDEQ expr')
     def asgn(self, p):
@@ -101,7 +100,10 @@ class HOCParser(Parser):
     @_('ID MODEQ expr')
     def asgn(self, p):
         return AsgnIdExpr(p.ID, p.MODEQ, p.expr)
-   
+
+    @_('LBRACE stmtlist RBRACE')
+    def stmt(self, p):
+        pass
 
     @_('VAR ID type ASSIGN expr')
     def stmt(self, p):
@@ -139,41 +141,22 @@ class HOCParser(Parser):
     def stmt(self, p):
         return Statement(p[0], p[1])
 
-    @_('WHILE LPAREN cond RPAREN LBRACE stmtlist RBRACE')
-    def stmt(self,p):
-        return WhileStatement(p[2], p[5])
-
-    @_('WHILE LPAREN cond RPAREN stmtlist')
-    def stmt(self,p):
+    @_('WHILE LPAREN cond RPAREN stmt')
+    def stmt(self, p):
         return WhileStatement(p[2], p[4])
 
-    @_('FOR LPAREN cond COMMA cond COMMA cond RPAREN LBRACE stmtlist RBRACE')
+    @_('FOR LPAREN asgn COMMA cond COMMA expr RPAREN stmt')
     def stmt(self, p):
-        return ForStatement(p[2], p[4], p[6], p[9])
-
-    @_('FOR LPAREN cond COMMA cond COMMA cond RPAREN stmt')
-    def stmt(self, p):
-        return ForStatement(p[2], p[4], p[6], p[9])
-
-    @_('IF LPAREN cond RPAREN LBRACE stmtlist RBRACE')
-    def stmt(self, p):
-        return IfStatement(p[2], p[5], None)
+        return ForStatement(p[2], p[4], p[6], p[8])
 
     @_('IF LPAREN cond RPAREN stmt')
     def stmt(self, p):
-        return If1Stmt(p[2], p[4])
+        return IfStatement(p[2], p[4], None)
 
-    @_('IF LPAREN cond RPAREN NEWLINE stmt')
-    def stmt(self, p):
-        return If1Stmt(p[2], p[5])
 
-    @_('IF LPAREN cond RPAREN LBRACE stmtlist RBRACE ELSE LBRACE stmtlist RBRACE')
+    @_('IF LPAREN cond RPAREN stmt ELSE stmt')
     def stmt(self, p):
-        return IfStatement(p[2], p[5], p[9])
-
-    @_('IF LPAREN cond RPAREN LBRACE stmtlist RBRACE ELSE stmt')
-    def stmt(self, p):
-         return IfStatement(p[2], p[5], p[8])   
+        return IfStatement(p[2], p[4], p[6])
 
     @_('expr GT expr')
     def cond(self, p):
@@ -211,17 +194,14 @@ class HOCParser(Parser):
     def cond(self, p):
         return UnaryOp(p[0], p[1])
 
-    @_('asgn')
-    def stmtlist(self, p):
-        pass
+
+    
+
+   
 
     @_('NEWLINE')
     def stmtlist(self, p):
         pass
-
-    @_('stmt semi')
-    def stmtlist(self, p):
-        return Stmtlist([p[0]])
 
     @_('stmtlist NEWLINE')
     def stmtlist(self, p):
@@ -239,6 +219,16 @@ class HOCParser(Parser):
             p[0].append(p[1])
             return p[0]
 
+    @_('asgn semi')
+    def stmtlist(self, p):
+        pass
+
+    @_('expr semi')
+    def stmtlist(self, p):
+        pass
+
+
+   
 
     @_('INT')
     def type(self, p):
@@ -252,12 +242,11 @@ class HOCParser(Parser):
     def type(self, p):
         pass
 
-
     @_('READ LPAREN ID RPAREN')
     def expr(self, p):
         return Read(p[2])
 
-    @_('BLTIN LPAREN expr RPAREN' )
+    @_('BLTIN LPAREN expr RPAREN')
     def expr(self, p):
         return Bltin(p[2])
 
@@ -288,7 +277,6 @@ class HOCParser(Parser):
     @_('MINUS expr %prec UMINUS')
     def expr(self, p):
         return UnaryOp(p[0], p[1])
-
 
     @_('term')
     def expr(self, p):
@@ -339,7 +327,7 @@ class HOCParser(Parser):
         return p[0]
 
     @_('ARG')
-    def fact(self,p):
+    def fact(self, p):
         return p[0]
 
     @_('expr')
@@ -411,11 +399,11 @@ class HOCParser(Parser):
         pass
 
     @_('FUNC ID')
-    def defn(self,p):
+    def defn(self, p):
         pass
 
     @_('PROC ID')
-    def defn(self,p):
+    def defn(self, p):
         pass
 
     @_('empty')
@@ -438,40 +426,42 @@ class HOCParser(Parser):
     @_('SEMI')
     def semi(self, p):
         pass
-        
+
     @_('empty')
     def semi(self, p):
         pass
 
     @_('')
-    def empty(self,p):
+    def empty(self, p):
         pass
-
 
     def error(self, p):
         if p:
-            print(p.lineno, ": Syntax error at token", p.value, "index: ", p.index)
+            print(p.lineno, ": Syntax error at token",
+                  p.value, "index: ", p.index)
             # Just discard the token or tell the parser it's okay.
         else:
             print("Syntax error at EOF")
-        
+
+
 def parse(data, debug=0):
-    #print(parser.error)
+    # print(parser.error)
     p = parser.parse(lexer.tokenize(data))
-    #print(parser.errorStatus)
+    # print(parser.errorStatus)
     print("\n")
     return p
 
 
-
 if __name__ == '__main__':
-    import sys 
+    import sys
     lexer = HOCLexer()
     parser = HOCParser()
-    if(len(sys.argv)!=2):#Verifica la cantidad de argumentos a la hora de compilar si no son 2. "py 'fichero.py' 'archivo'"
-        sys.stderr.write('Usage: "{}" "filename"\n'.format(sys.argv[0]))#permite que al al compilar indique que debe de darse el archivo de la forma python.exe "fichero.py" "Archivo a abrir, como un simple print"
-        raise SystemExit(1)#termina el programa
-    file= open(sys.argv[1]).read()
-    
-    p=parse(file)
+    if(len(sys.argv) != 2):  # Verifica la cantidad de argumentos a la hora de compilar si no son 2. "py 'fichero.py' 'archivo'"
+        # permite que al al compilar indique que debe de darse el archivo de la
+        # forma python.exe "fichero.py" "Archivo a abrir, como un simple print"
+        sys.stderr.write('Usage: "{}" "filename"\n'.format(sys.argv[0]))
+        raise SystemExit(1)  # termina el programa
+    file = open(sys.argv[1]).read()
+
+    p = parse(file)
     p.pprint()
