@@ -101,6 +101,7 @@ class HOCParser(Parser):
     @_('ID MODEQ expr')
     def asgn(self, p):
         return AsgnIdExpr(p.ID, p.MODEQ, p.expr)
+   
 
     @_('VAR ID type ASSIGN expr')
     def stmt(self, p):
@@ -140,11 +141,11 @@ class HOCParser(Parser):
 
     @_('WHILE LPAREN cond RPAREN LBRACE stmtlist RBRACE')
     def stmt(self,p):
-        pass
+        return WhileStatement(p[2], p[5])
 
-    @_('WHILE LPAREN cond RPAREN stmt')
+    @_('WHILE LPAREN cond RPAREN stmtlist')
     def stmt(self,p):
-        return WhilleStatement(p[2], p[4])
+        return WhileStatement(p[2], p[4])
 
     @_('FOR LPAREN cond COMMA cond COMMA cond RPAREN LBRACE stmtlist RBRACE')
     def stmt(self, p):
@@ -156,19 +157,23 @@ class HOCParser(Parser):
 
     @_('IF LPAREN cond RPAREN LBRACE stmtlist RBRACE')
     def stmt(self, p):
-        return If1Stament(p[2], p[5], None)
+        return IfStatement(p[2], p[5], None)
 
     @_('IF LPAREN cond RPAREN stmt')
     def stmt(self, p):
         return If1Stmt(p[2], p[4])
 
+    @_('IF LPAREN cond RPAREN NEWLINE stmt')
+    def stmt(self, p):
+        return If1Stmt(p[2], p[5])
+
     @_('IF LPAREN cond RPAREN LBRACE stmtlist RBRACE ELSE LBRACE stmtlist RBRACE')
     def stmt(self, p):
-        return If1Stament(p[2], p[5], p[9])
+        return IfStatement(p[2], p[5], p[9])
 
     @_('IF LPAREN cond RPAREN LBRACE stmtlist RBRACE ELSE stmt')
     def stmt(self, p):
-         return If1Stament(p[2], p[5], p[9])   
+         return IfStatement(p[2], p[5], p[8])   
 
     @_('expr GT expr')
     def cond(self, p):
@@ -205,6 +210,10 @@ class HOCParser(Parser):
     @_('NOT expr semi')
     def cond(self, p):
         return UnaryOp(p[0], p[1])
+
+    @_('asgn')
+    def stmtlist(self, p):
+        pass
 
     @_('NEWLINE')
     def stmtlist(self, p):
@@ -335,7 +344,7 @@ class HOCParser(Parser):
 
     @_('expr')
     def prlist(self, p):
-        return PrintStatement([p[0]])
+        return Prilist([p[0]])
 
     @_('STRING')
     def prlist(self, p):
