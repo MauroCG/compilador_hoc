@@ -151,7 +151,7 @@ class HOCParser(Parser):
 
     @_('IF LPAREN cond RPAREN LBRACE stmtlist RBRACE ELSE LBRACE stmtlist RBRACE')
     def stmt(self, p):
-        return IfStatement(p[2], p[4], p[7])
+        return IfStatement(p[2], p[5], p[9])
 
     @_('expr GT expr')
     def cond(self, p):
@@ -189,21 +189,22 @@ class HOCParser(Parser):
     def cond(self, p):
         return UnaryOp(p[0], p[1])
 
-    @_('asgn semi')
-    def stmtlist(self, p):
-        return p[0]
-
-    @_('expr semi')
-    def stmtlist(self, p):
-        return p[0]
-
-    @_('stmt semi')
-    def stmtlist(self, p):
-        return p[0]
 
     @_('NEWLINE')
     def stmtlist(self, p):
         pass
+
+    @_('asgn semi')
+    def stmtlist(self, p):
+        return Stmtlist([p[0]])
+
+    @_('expr semi')
+    def stmtlist(self, p):
+        return Stmtlist([p[0]])
+
+    @_('stmt semi')
+    def stmtlist(self, p):
+        return Stmtlist([p[0]])
 
     @_('stmtlist NEWLINE')
     def stmtlist(self, p):

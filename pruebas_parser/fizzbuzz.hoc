@@ -8,20 +8,19 @@
 func fizzbuzz(n int) {
   if(n > 0) {
     var i int = 1;
-    //while(i <= 100) { i += 10; }
+    while(i <= 100) { i += 10; }
     while(i <= n) {
-      if((i % 15) == 0) {
-      print("fizzbuzz");
+      if((i % 15) == 0) { 
+        print "fizzbuzz";
       } else {
-       if((i % 3) == 0) {
+      if((i % 3) == 0) {
         print("buzz");
       } else {
-      if((i % 5) == 0) {
-        print("fizz");
-      } else { print(i); }
+        if((i % 5) == 0) {
+          print("fizz");
+        } else { print(i); }
       }
-      print("");
       }
     }
-  }
+  } else { reutrn }
 }
