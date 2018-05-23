@@ -189,6 +189,18 @@ class HOCParser(Parser):
     def cond(self, p):
         return UnaryOp(p[0], p[1])
 
+    @_('asgn semi')
+    def stmtlist(self, p):
+        return p[0]
+
+    @_('expr semi')
+    def stmtlist(self, p):
+        return p[0]
+
+    @_('stmt semi')
+    def stmtlist(self, p):
+        return p[0]
+
     @_('NEWLINE')
     def stmtlist(self, p):
         pass
@@ -208,18 +220,6 @@ class HOCParser(Parser):
         else:
             p[0].append(p[1])
             return p[0]
-
-    @_('asgn semi')
-    def stmtlist(self, p):
-        return p[0]
-
-    @_('expr semi')
-    def stmtlist(self, p):
-        return p[0]
-
-    @_('stmt semi')
-    def stmtlist(self, p):
-        return p[0]
 
     @_('INT')
     def type(self, p):
