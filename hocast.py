@@ -36,7 +36,10 @@ class AST(object):
         def __repr__(self):
                 return self.__class__.__name__
 
-        def pprint(self):
+        def pprint(self, dot=False):
+            if dot:
+                flatten(self, dot)
+            else:
                 for depth, node in flatten(self):
                         print("%s%s" % (" "*(4*depth),node))
 
@@ -379,7 +382,7 @@ class DotVisitor(NodeVisitor):
 
 
 # NO MODIFICAR
-def flatten(top):
+def flatten(top, dot=False):
         '''
         Aplana el arbol de sintaxis dentro de una lista para efectos
         de depuración y pruebas.  Este retorna una lista de tuplas de
@@ -398,9 +401,11 @@ def flatten(top):
                         NodeVisitor.generic_visit(self, node)
                         self.depth -= 1
 
-        dot = DotVisitor()
-        dot.visit(top)
-        print(dot)
-        d = Flattener()
-        d.visit(top)
-        return d.nodes
+        if dot:
+            dot = DotVisitor()
+            dot.visit(top)
+            print(dot)
+        else:
+            d = Flattener()
+            d.visit(top)
+            return d.nodes
