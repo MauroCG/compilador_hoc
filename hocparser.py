@@ -2,7 +2,7 @@ from sly import Parser
 
 
 from hoclex import HOCLexer
-from hocAST import *
+from hocast import *
 
 
 class HOCParser(Parser):
