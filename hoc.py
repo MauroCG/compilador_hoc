@@ -9,10 +9,11 @@ def Menu():
 		print("Digite una opcion: \n")
 		print("1. Analísis Léxico")
 		print("2. Analísis Sintáctico")
-		print("3. Árbol de sintaxis abstracto (AST) \n")
+		print("3. Árbol de sintaxis abstracto (AST)")
+		print("4. Árbol de sintaxis abstracto en formato dot \n")
 		op = input("Digite su elección -> ")
 		op = int(op)
-		assert(op <= 3 and op >= 1)
+		assert(op <= 4 and op >= 1)
 		return op
 
 
@@ -33,6 +34,10 @@ class Facade(object):
 		ast = self.parser.parse(self.lex.tokenize(self.codehoc))
 		ast.pprint()
 
+	def dot(self):
+		ast = self.parser.parse(self.lex.tokenize(self.codehoc))
+		ast.pprint(dot=True)
+
 
 def main():
 	parser = argparse.ArgumentParser(description="Ayuda en las etapas de compilación, permitiendo mostrar cada una por separado")
@@ -43,6 +48,8 @@ def main():
 	group.add_argument("-p", "--parse", help='Muestra el analísis sintáctico del Código pasado',
 	action='store_true')
 	group.add_argument("-a", "--ast", help='Muestra el AST del código pasado',
+	action='store_true')
+	group.add_argument("-d", "--dot", help='Muestra el AST del código pasado en formato dot',
 	action='store_true')
 
 	parser.add_argument("codigo", help="Código a compilar, con extensión .hoc")
@@ -64,6 +71,11 @@ def main():
 		facade.ast()
 		return
 
+	if args.dot:
+		facade.dot()
+		return
+		
+
 	op = Menu()
 	if op == 1:
 		facade.lexico()
@@ -71,6 +83,8 @@ def main():
 		facade.sintactico()
 	elif op == 3:
 		facade.ast()
+	elif op == 4:
+		facade.dot()
 
 
 
