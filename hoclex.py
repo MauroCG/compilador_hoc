@@ -171,6 +171,10 @@ class HOCLexer(Lexer):
 
 
 
+def make_lexer():
+    lexer = HOCLexer()
+    return lexer
+
 def main():
     '''
     Programa principal. Para fines de depuración.

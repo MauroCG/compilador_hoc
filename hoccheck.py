@@ -130,7 +130,7 @@ class SymbolTable(object):
         x:float;
 
         '''
-        if self.symtab.has_key[a]:
+        if a in self.symtab:
             if self.symtab[a].type.get_string() != v.type.get_string():
                 raise SymbolTable.SymbolConflictError()
             else:
@@ -138,7 +138,7 @@ class SymbolTable(object):
         self.symtab[a] = v
 
     def lookup(self, a):
-        if self.symtab.has_key(a):
+        if a in self.symtab:
             return self.symtab[a]
         else:
             if self.parent != None:
@@ -159,7 +159,7 @@ class CheckProgramVisitor(NodeVisitor):
 
     def __init__(self):
         # Inicializa la tabla de simbolos
-        pass
+        self.current = None
 
     def push_symtab(self, node):
         self.current = SymbolTable(self.current)
@@ -180,6 +180,7 @@ class CheckProgramVisitor(NodeVisitor):
 
         # 1. Visita todas las declaraciones (statements)
         # 2. Registra la tabla de simbolos asociada
+        print(node._fields  )
         self.visit(node.program)
 
     def visit_IfStatement(self, node):
@@ -337,13 +338,13 @@ def check_program(node):
 def main():
     import hocparser
     import sys
-    from errors import subscribe_errors
+    #from errors import subscribe_errors
     lexer = hoclex.make_lexer()
-    parser = hocparse.make_parser()
-    with subscribe_errors(lambda msg: sys.stdout.write(msg + "\n")):
-        program = parser.parse(open(sys.argv[1]).read())
-        # Revisa el programa
-        check_program(program)
+    parser = hocparser.make_parser()
+    #with subscribe_errors(lambda msg: sys.stdout.write(msg + "\n")):
+    program = parser.parse(lexer.tokenize(open(sys.argv[1]).read()))
+    # Revisa el programa
+    check_program(program)
 
 if __name__ == '__main__':
     main()

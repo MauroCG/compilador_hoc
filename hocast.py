@@ -68,19 +68,11 @@ def validate_fields(**fields):
 
 # Unos pocos nodos ejemplos
 
-@validate_fields(defns=list, asgns=list, stmts=list, exprs=list, errors=list)
-class ListaPrograma(AST):
-        _fields=["defns", "asgns", "stmts", "exprs", "errors"]
-        def appendDefn(self, defn):
-                self.defns.append(defn)
-        def appendAsgn(self, asgn):
-                self.asgns.append(asgn)
-        def appendStmt(self, stmt):
-                self.stmts.append(stmt)
-        def appendExpr(self, expr):
-                self.exprs.append(expr)
-        def appendError(self, error):
-                self.errors.append(error)
+@validate_fields(program=list)
+class Program(AST):
+        _fields=["program"]
+        def appendDefn(self, new):
+                self.program.append(new)
 
 class AsgnIdExpr(AST):
         _fields=["ID", "simbol", "expr"]
@@ -195,8 +187,6 @@ class Literal(AST):
         '''
         _fields = ['value']
 
-class Program(AST):
-        _fields = ['program']
 
 @validate_fields(statements=list)
 class Statements(AST):

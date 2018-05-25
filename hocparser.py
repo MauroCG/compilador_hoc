@@ -36,41 +36,41 @@ class HOCParser(Parser):
     @_('list defn semi NEWLINE')
     def list(self, p):
         if(p.list is None):
-            return ListaPrograma([p.defn], [], [], [], [])
+            return Program([p.defn])
         else:
-            p.list.appendDefn(p.defn)
+            p.list.append(p.defn)
             return p.list
 
     @_('list asgn semi NEWLINE')
     def list(self, p):
         if(p.list is None):
-            return ListaPrograma([], [p.asgn], [], [], [])
+            return Program([p.asgn])
         else:
-            p.list.appendAsgn(p.asgn)
+            p.list.append(p.asgn)
             return p.list
 
     @_('list stmt semi NEWLINE')
     def list(self, p):
         if(p.list is None):
-            return ListaPrograma([], [], [p.stmt], [], [])
+            return Program([p.stmt])
         else:
-            p.list.appendStmt(p.stmt)
+            p.list.append(p.stmt)
             return p.list
 
     @_('list expr semi NEWLINE')
     def list(self, p):
         if(p.list is None):
-            return ListaPrograma([], [], [], [p.expr], [])
+            return Program([p.expr])
         else:
-            p.list.appendExpr(p.expr)
+            p.list.append(p.expr)
             return p.list
 
     @_('list error semi NEWLINE')
     def list(self, p):
         if(p.list is None):
-            return ListaPrograma([], [], [], [], [p.error])
+            return Program([p.error])
         else:
-            p.list.appendError(p.error)
+            p.list.append(p.error)
             return p.list
 
     @_('ARG ASSIGN expr')
@@ -442,6 +442,10 @@ def parse(data, debug=0):
     # print(parser.errorStatus)
     print("\n")
     return p
+
+def make_parser():
+    parser = HOCParser()
+    return parser
 
 
 if __name__ == '__main__':
