@@ -1,6 +1,9 @@
 from errors import error
 from sly import Lexer
 
+
+operators ={'+':'PLUS','-':'MINUS','*':'TIMES','/':'DIVIDE','%':'MOD','^':'EXP'}
+
 class HOCLexer(Lexer):
 
     #-------------------------------------------------------------------------------
@@ -115,6 +118,8 @@ class HOCLexer(Lexer):
 
 
     # Regular expression rules for tokens
+
+
 
     EXP=r'\^'
     INC = r'\+\+'

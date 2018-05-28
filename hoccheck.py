@@ -162,6 +162,11 @@ class CheckProgramVisitor(NodeVisitor):
         self.current = None
 
     def push_symtab(self, node):
+        '''if self.current is None:
+            node.symtab = SymbolTable(self.current)
+        else:
+            node.symtab = SymbolTable(self.current.symtab)
+        self.current = node'''
         self.current = SymbolTable(self.current)
         node.symtab = self.current
 
@@ -169,33 +174,39 @@ class CheckProgramVisitor(NodeVisitor):
         self.current = self.current.parent
 
     def visit_Program(self, node):
-
         self.push_symtab(node)
         # Agrega nombre de tipos incorporados ((int, float, string) a la tabla
         # de simbolos
-        node.symtab.add("int", hoctype.int_type)
-        node.symtab.add("float", hoctype.float_type)
+        #node.symtab.add("int", hoctype.int_type)
+        #node.symtab.add("float", hoctype.float_type)
         #node.symtab.add("string", hoctype.string_type)
         #node.symtab.add("bool", hoctype.boolean_type)
 
         # 1. Visita todas las declaraciones (statements)
         # 2. Registra la tabla de simbolos asociada
-        print(node._fields  )
-        self.visit(node.program)
+        for stmt in node.program:
+            self.visit(stmt)
 
     def visit_IfStatement(self, node):
         self.visit(node.condition)
-        if not node.condition.type == hoctype.boolean_type:
-            error(node.lineno, "Tipo incorrecto para condición if")
-        else:
+        if node.then_b:
             self.visit(node.then_b)
-            if node.else_b:
-                self.visit(node.else_b)
+        if node.else_b:
+            self.visit(node.else_b)
 
     def visit_WhileStatement(self, node):
         self.visit(node.condition)
-        if not node.condition.type == hoctype.boolean_type:
+        if not node.condition.type == hoctype.int_type:
             error(node.lineno, "Tipo incorrecto para condición while")
+        else:
+            self.visit(node.body)
+
+    def visit_ForStatement(self, node):
+        self.visit(node.asgn)
+        self.visit(node.cond)
+        self.visit(node.expr)
+        if not node.asgn.cond == hoctype.int_type:
+            error(node.lineno, "Tipo incorrecto para condición For")
         else:
             self.visit(node.body)
 
@@ -213,21 +224,25 @@ class CheckProgramVisitor(NodeVisitor):
         # 3. Asigne el tipo resultante
         self.visit(node.left)
         self.visit(node.right)
-        node.type = node.left.type
+        if node.left.type == node.right.type:
+            node.type = node.left.type
+        else:
+            error(node.lineno, "Tipos incompatibles, " + node.left.type + " "
+                  + node.op + " " + node.right.type)
 
-    def visit_AssignmentStatement(self, node):
+    def visit_AsgnIdExpr(self, node):
         # 1. Asegúrese que la localización de la asignación está definida
         sym = self.symtab.lookup(node.location)
-        assert sym, "Asignado a un sym desconocido"
+        assert sym, "Variable usada pero no definida, " + node.location
         # 2. Revise que la asignación es permitida, pe. sym no es una constante
         # 3. Revise que los tipos coincidan.
-        self.visit(node.value)
         assert sym.type == node.value.type, "Tipos no coinciden en asignación"
+        self.visit(node.value)
 
     def visit_ConstDeclaration(self, node):
         # 1. Revise que el nombre de la constante no se ha definido
         if self.symtab.lookup(node.id):
-            error(node.lineno, "Símbol %s ya definido" % node.id)
+            error(node.lineno, "Símbolo %s ya definido" % node.id)
         # 2. Agrege una entrada a la tabla de símbolos
         else:
             self.symtab.add(node.id, node)
@@ -235,19 +250,18 @@ class CheckProgramVisitor(NodeVisitor):
         node.type = node.value.type
 
     def visit_VarDeclaration(self, node):
-        # 1. Revise que el nombre de la variable no se ha definido
-        if self.symtab.lookup(node.id):
-            error(node.lineno, "Símbol %s ya definido" % node.id)
-        # 2. Agrege la entrada a la tabla de símbolos
+        if self.current.lookup(node.id):
+            error(node.lineno, "variable %s ya definida" % node.id)
         else:
-            self.symtab.add(node.id, node)
+            self.current.add(node.id, node)
+        
         # 2. Revise que el tipo de la expresión (si lo hay) es el mismo
         if node.value:
-            self.visit(node.value)
             assert(node.typename == node.value.type.name)
         # 4. Si no hay expresión, establecer un valor inicial para el valor
         else:
             node.value = None
+            
         node.type = self.symtab.lookup(node.typename)
         assert(node.type)
 
@@ -286,40 +300,57 @@ class CheckProgramVisitor(NodeVisitor):
         # registe el nombre de la función
         self.visit(node.func_prototype)
 
-    def visit_FuncPrototype(self, node):
-        print('foooooo')
-        if self.symtab.lookup(node.id):
-            error(node.lineno, "Símbol %s ya definido" % node.id)
-        self.visit(node.params)
-        node.type = self.symtab.lookup(node.typename)
+    def visit_FuncDecl(self, node):
+        if self.current.lookup(node.id):
+            error(node.lineno, "Nombre %s ya definido" % node.id)
+        self.current.add(node.id, node.functype)
+        if not node.params is None:
+            self.visit(node.params)
+        if not node.body is None:
+            self.visit(node.body)
 
     def visit_Parameters(self, node):
         for p in node.param_decls:
             self.visit(p)
 
     def visit_ParamDecl(self, node):
-        node.type = self.symtab.lookup(node.typename)
+        self.push_symtab(node)
+        self.current.add(node.id, node.type)
 
     def visit_Group(self, node):
         self.visit(node.expression)
         node.type = node.expression.type
 
     def visit_RelationalOp(self, node):
-        self.visit(node.left)
-        self.visit(node.right)
-        if not node.left.type == node.right.type:
-            error(node.lineno, "Operandos de relación no son del mismo tipo")
-        elif not hoclex.operators[node.op] in node.left.type.bin_ops:
-            error(node.lineno, "Operación no soportada con este tipo")
-        node.type = self.symtab.lookup('bool')
+        symL = None
+        symR = None
+
+        if type(node.left) == str:
+            symL = self.current.lookup(node.left)
+            assert symL, "%s no definido" % node.left
+            if symL == 'int':
+                symL = int
+            elif symL == 'float':
+                symL = float
+        if type(node.right) == str:
+            symR = self.current.lookup(node.right)
+            assert symR, "%s no definido" % node.right
+            if symR == 'int':
+                symR = int
+            elif symR == 'float':
+                symR = float
+
+        if symL and symR:
+            assert symL == symR, "Los tipos no coinciden {} = {}".format(symL, symR)
+        elif symL:
+            assert symL == type(node.right), "Los tipos no coinciden {} = {}".format(symL, type(node.right))
+        elif symR:
+            assert type(node.left) == symR, "Los tipos no coinciden {} = {}".format(type(node.left), symR)
 
     def visit_FunCall(self, node):
         pass
 
     def visit_ExprList(self, node):
-        pass
-
-    def visit_Empty(self, node):
         pass
 
 # ----------------------------------------------------------------------
@@ -341,7 +372,7 @@ def main():
     #from errors import subscribe_errors
     lexer = hoclex.make_lexer()
     parser = hocparser.make_parser()
-    #with subscribe_errors(lambda msg: sys.stdout.write(msg + "\n")):
+    # with subscribe_errors(lambda msg: sys.stdout.write(msg + "\n")):
     program = parser.parse(lexer.tokenize(open(sys.argv[1]).read()))
     # Revisa el programa
     check_program(program)

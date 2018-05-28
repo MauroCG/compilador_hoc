@@ -244,19 +244,19 @@ class HOCParser(Parser):
 
     @_('INC ID')
     def expr(self, p):
-        return UnaryOp(p[0], p[1])
+        return AsgnIdExpr(p[1], p[0],None)
 
     @_('DEC ID')
     def expr(self, p):
-        return UnaryOp(p[0], p[1])
+        return AsgnIdExpr(p[1], p[0],None)
 
     @_('ID INC')
     def expr(self, p):
-        return UnaryOp(p[1], p[0])
+        return AsgnIdExpr(p[0], p[1],None)
 
     @_('ID DEC')
     def expr(self, p):
-        return UnaryOp(p[1], p[0])
+        return AsgnIdExpr(p[0], p[1],None)
 
     @_('expr PLUS term')
     def expr(self, p):
