@@ -323,6 +323,11 @@ class CheckProgramVisitor(NodeVisitor):
         self.visit(node.right)
         assert node.left.type == node.right.type, "Los tipos {} {} no coinciden".format(
             node.left.type.name, node.right.type.name)
+        print(node.left.type.bin_ops)
+        sym = hoclex.operators[node.op]
+        assert (sym in 
+            node.left.type.bin_ops), "Operación %s no permitida para el tipo %s" % (node.op,
+         node.left.type.name) 
 
     def visit_FunCall(self, node):
         pass
