@@ -193,10 +193,7 @@ class CheckProgramVisitor(NodeVisitor):
 
     def visit_WhileStatement(self, node):
         self.visit(node.condition)
-        if not node.condition.type == hoctype.int_type:
-            error(node.lineno, "Tipo incorrecto para condición while")
-        else:
-            self.visit(node.body)
+        self.visit(node.body)
 
     def visit_ForStatement(self, node):
         self.visit(node.asgn)
@@ -229,12 +226,14 @@ class CheckProgramVisitor(NodeVisitor):
 
     def visit_AsgnIdExpr(self, node):
         # 1. Asegúrese que la localización de la asignación está definida
-        sym = self.symtab.lookup(node.location)
-        assert sym, "Variable usada pero no definida, " + node.location
+        sym = self.current.lookup(node.location.name)
+        assert sym, "Variable %s usada pero no definida" % node.location
         # 2. Revise que la asignación es permitida, pe. sym no es una constante
         # 3. Revise que los tipos coincidan.
-        assert sym.type == node.value.type, "Tipos no coinciden en asignación"
-        self.visit(node.value)
+        self.visit(node.expr)
+        assert (sym.type == 
+            node.expr.type.name), "Los tipos %s %s no coinciden en la asignación" % (
+            sym.type, node.expr.type.name)
 
     def visit_ConstDeclaration(self, node):
         # 1. Revise que el nombre de la constante no se ha definido
@@ -328,8 +327,9 @@ class CheckProgramVisitor(NodeVisitor):
     def visit_FunCall(self, node):
         pass
 
-    def visit_ExprList(self, node):
-        pass
+    def visit_Expr(self, node):
+        self.visit(node.expr)
+        node.type = node.expr.type
 
 # ----------------------------------------------------------------------
 #                       NO MODIFICAR NADA DE LO DE ABAJO

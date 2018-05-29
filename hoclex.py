@@ -3,7 +3,7 @@ from sly import Lexer
 
 
 operators ={'+':'PLUS', '-':'MINUS', '*':'TIMES', '/':'DIVIDE', '%':'MOD',
- '^':'EXP', '>':'GT', '>=':'GE', '=':'EQ', '!=':'NE', '<':'LT', '<=':'LE'}
+ '^':'EXP', '>':'GT', '>=':'GE', '==':'EQ', '!=':'NE', '<':'LT', '<=':'LE'}
 
 class HOCLexer(Lexer):
 

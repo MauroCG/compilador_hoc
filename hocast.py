@@ -1,7 +1,7 @@
 
 # mpasast.py
 # -*- coding: utf-8 -*-
-import pydot as pgv
+import pydotplus as pgv
 
 
 '''
@@ -350,10 +350,7 @@ class NodeTransformer(NodeVisitor):
         return node
 
 
-import pydotplus as pgv
-import hocast as ast
-
-class DotVisitor(ast.NodeVisitor):
+class DotVisitor(NodeVisitor):
     '''
     Clase Node Visitor que crea secuencia de instrucciones Dot
     '''
