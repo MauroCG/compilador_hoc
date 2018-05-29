@@ -87,7 +87,6 @@ Un caparazón de código se proporciona a continuación.
 import sys
 import re
 import string
-import types
 from errors import error
 from hocast import *
 import hoctype
@@ -177,10 +176,8 @@ class CheckProgramVisitor(NodeVisitor):
         self.push_symtab(node)
         # Agrega nombre de tipos incorporados ((int, float, string) a la tabla
         # de simbolos
-        #node.symtab.add("int", hoctype.int_type)
-        #node.symtab.add("float", hoctype.float_type)
-        #node.symtab.add("string", hoctype.string_type)
-        #node.symtab.add("bool", hoctype.boolean_type)
+        node.symtab.add("int", hoctype.int_type)
+        node.symtab.add("float", hoctype.float_type)
 
         # 1. Visita todas las declaraciones (statements)
         # 2. Registra la tabla de simbolos asociada
@@ -277,20 +274,21 @@ class CheckProgramVisitor(NodeVisitor):
     def visit_LoadLocation(self, node):
         # 1. Revisar que loa localización cargada es válida.
         # 2. Asignar el tipo apropiado
-        sym = self.symtab.lookup(node.name)
-        assert(sym)
-        node.type = sym.type
+        sym = self.current.lookup(node.name)
+        assert sym, "Variable %s no definida" % sym
+        symtype = self.current.lookup(sym.type)
+        node.type = symtype
 
     def visit_Literal(self, node):
         # Adjunte un tipo apropiado a la constante
-        if isinstance(node.value, types.BooleanType):
-            node.type = self.symtab.lookup("bool")
-        elif isinstance(node.value, types.IntType):
-            node.type = self.symtab.lookup("int")
-        elif isinstance(node.value, types.FloatType):
-            node.type = self.symtab.lookup("float")
-        elif isinstance(node.value, types.StringTypes):
-            node.type = self.symtab.lookup("string")
+        if isinstance(node.value, bool):
+            node.type = self.current.lookup("bool")
+        elif isinstance(node.value, int):
+            node.type = self.current.lookup("int")
+        elif isinstance(node.value, float):
+            node.type = self.current.lookup("float")
+        elif isinstance(node.value, str):
+            node.type = self.current.lookup("string")
 
     def visit_PrintStatement(self, node):
         self.visit(node.expr)
@@ -303,7 +301,7 @@ class CheckProgramVisitor(NodeVisitor):
     def visit_FuncDecl(self, node):
         if self.current.lookup(node.id):
             error(node.lineno, "Nombre %s ya definido" % node.id)
-        self.current.add(node.id, node.functype)
+        self.current.add(node.id, node)
         if not node.params is None:
             self.visit(node.params)
         if not node.body is None:
@@ -314,38 +312,17 @@ class CheckProgramVisitor(NodeVisitor):
             self.visit(p)
 
     def visit_ParamDecl(self, node):
-        self.push_symtab(node)
-        self.current.add(node.id, node.type)
+        self.current.add(node.id, node)
 
     def visit_Group(self, node):
         self.visit(node.expression)
         node.type = node.expression.type
 
     def visit_RelationalOp(self, node):
-        symL = None
-        symR = None
-
-        if type(node.left) == str:
-            symL = self.current.lookup(node.left)
-            assert symL, "%s no definido" % node.left
-            if symL == 'int':
-                symL = int
-            elif symL == 'float':
-                symL = float
-        if type(node.right) == str:
-            symR = self.current.lookup(node.right)
-            assert symR, "%s no definido" % node.right
-            if symR == 'int':
-                symR = int
-            elif symR == 'float':
-                symR = float
-
-        if symL and symR:
-            assert symL == symR, "Los tipos no coinciden {} = {}".format(symL, symR)
-        elif symL:
-            assert symL == type(node.right), "Los tipos no coinciden {} = {}".format(symL, type(node.right))
-        elif symR:
-            assert type(node.left) == symR, "Los tipos no coinciden {} = {}".format(type(node.left), symR)
+        self.visit(node.left)
+        self.visit(node.right)
+        assert node.left.type == node.right.type, "Los tipos {} {} no coinciden".format(
+            node.left.type.name, node.right.type.name)
 
     def visit_FunCall(self, node):
         pass

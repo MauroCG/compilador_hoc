@@ -104,7 +104,7 @@ class VarDefinition(AST):
 
 
 class FuncDecl(AST):
-    _fields = ['id', 'params', 'functype', 'body']
+    _fields = ['id', 'params', 'type', 'body']
 
 
 class ProcDecl(AST):

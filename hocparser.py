@@ -308,15 +308,15 @@ class HOCParser(Parser):
 
     @_('INTEGER')
     def fact(self, p):
-        return p[0]
+        return Literal(p[0])
 
     @_('NUMFLOAT')
     def fact(self, p):
-        return p[0]
+        return Literal(p[0])
 
     @_('ID')
     def fact(self, p):
-        return p[0]
+        return LoadLocation(p[0])
 
     @_('ARG')
     def fact(self, p):
@@ -324,50 +324,50 @@ class HOCParser(Parser):
 
     @_('expr')
     def prlist(self, p):
-        return Prilist([p[0]])
+        return Prilist([Expr(p[0])])
 
     @_('STRING')
     def prlist(self, p):
-        return Prilist([p[0]])
+        return Prilist([Literal(p[0])])
 
     @_('LPAREN STRING RPAREN')
     def prlist(self, p):
-        return Prilist([p[1]])
+        return Prilist([Literal(p[1])])
 
     @_('LPAREN prlist COMMA expr RPAREN')
     def prlist(self, p):
         if p.prlist is None:
-            return Prilist([p[3]])
+            return Prilist([Expr(p[3])])
         else:
             plist = p[1]
-            plist.append(p[3])
+            plist.append(Expr(p[3]))
             return plist
 
     @_('LPAREN prlist COMMA STRING RPAREN')
     def prlist(self, p):
         if p.prlist is None:
-            return Prilist([p[3]])
+            return Prilist([Literal(p[3])])
         else:
             plist = p[1]
-            plist.append(p[3])
+            plist.append(Literal(p[3]))
             return plist
 
     @_('prlist COMMA expr')
     def prlist(self, p):
         if p.prlist is None:
-            return Prilist([p[2]])
+            return Prilist([Expr(p[2])])
         else:
             plist = p[0]
-            plist.append(p[2])
+            plist.append(Expr(p[2]))
             return plist
 
     @_('prlist COMMA STRING')
     def prlist(self, p):
         if p.prlist is None:
-            return Prilist([p[2]])
+            return Prilist([Literal(p[2])])
         else:
             plist = p[0]
-            plist.append(p[2])
+            plist.append(Literal(p[2]))
             return plist
 
     @_('ID type')
