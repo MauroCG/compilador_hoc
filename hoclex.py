@@ -90,6 +90,8 @@ class HOCLexer(Lexer):
                 t.value = int(t.value, 16)
             elif t.value[0] == '0':
                 t.value = int(t.value, 8)
+            else:
+                t.value = int(t.value)
         else:
             t.value = int(t.value)
         return t

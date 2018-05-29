@@ -79,27 +79,27 @@ class HOCParser(Parser):
 
     @_('ID ASSIGN expr')
     def asgn(self, p):
-        return AsgnIdExpr(p.ID, p.ASSIGN, p.expr)
+        return AsgnIdExpr(LoadLocation(p.ID), p.ASSIGN, p.expr)
 
     @_('ID ADDEQ expr')
     def asgn(self, p):
-        return AsgnIdExpr(p.ID, p.ADDEQ, p.expr)
+        return AsgnIdExpr(LoadLocation(p.ID), p.ADDEQ, p.expr)
 
     @_('ID SUBEQ expr')
     def asgn(self, p):
-        return AsgnIdExpr(p.ID, p.SUBEQ, p.expr)
+        return AsgnIdExpr(LoadLocation(p.ID), p.SUBEQ, p.expr)
 
     @_('ID MULEQ expr')
     def asgn(self, p):
-        return AsgnIdExpr(p.ID, p.MULEQ, p.expr)
+        return AsgnIdExpr(LoadLocation(p.ID), p.MULEQ, p.expr)
 
     @_('ID DIVEQ expr')
     def asgn(self, p):
-        return AsgnIdExpr(p.ID, p.DIVEQ, p.expr)
+        return AsgnIdExpr(LoadLocation(p.ID), p.DIVEQ, p.expr)
 
     @_('ID MODEQ expr')
     def asgn(self, p):
-        return AsgnIdExpr(p.ID, p.MODEQ, p.expr)
+        return AsgnIdExpr(LoadLocation(p.ID), p.MODEQ, p.expr)
 
     @_('VAR ID type ASSIGN expr')
     def stmt(self, p):
@@ -107,7 +107,7 @@ class HOCParser(Parser):
 
     @_('VAR ID type')
     def stmt(self, p):
-        return VarDefinition(p[1], p[2])
+        return VarDeclaration(p[1], p[2], None)
 
     @_('FUNC ID LPAREN formals RPAREN type LBRACE stmtlist RBRACE')
     def stmt(self, p):
@@ -119,11 +119,11 @@ class HOCParser(Parser):
 
     @_('CONST ID ASSIGN INTEGER')
     def stmt(self, p):
-        return ConstDeclaration(p[1], p[3])
+        return ConstDeclaration(p[1], Literal(p[3]))
 
     @_('CONST ID ASSIGN NUMFLOAT')
     def stmt(self, p):
-        return ConstDeclaration(p[1], p[3])
+        return ConstDeclaration(p[1], Literal(p[3]))
 
     @_('RETURN')
     def stmt(self, p):

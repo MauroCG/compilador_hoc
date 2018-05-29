@@ -99,10 +99,6 @@ class ConstDeclaration(AST):
     _fields = ['id', 'value']
 
 
-class VarDefinition(AST):
-    _fields = ['id', 'type']
-
-
 class FuncDecl(AST):
     _fields = ['id', 'params', 'type', 'body']
 

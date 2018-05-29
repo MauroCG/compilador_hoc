@@ -254,13 +254,14 @@ class CheckProgramVisitor(NodeVisitor):
         
         # 2. Revise que el tipo de la expresión (si lo hay) es el mismo
         if node.value:
-            assert(node.typename == node.value.type.name)
+            self.visit(node.value)
+            assert(node.type == node.value.type.name), error(node.lineno, 
+                "El valor asignado debe ser de tipo %s" % node.type)
         # 4. Si no hay expresión, establecer un valor inicial para el valor
         else:
             node.value = None
             
-        node.type = self.symtab.lookup(node.typename)
-        assert(node.type)
+        #node.type = self.current.lookup(node.type)
 
     def visit_Typename(self, node):
         # 1. Revisar que el nombre de tipo es válido que es actualmente un tipo
@@ -281,14 +282,10 @@ class CheckProgramVisitor(NodeVisitor):
 
     def visit_Literal(self, node):
         # Adjunte un tipo apropiado a la constante
-        if isinstance(node.value, bool):
-            node.type = self.current.lookup("bool")
-        elif isinstance(node.value, int):
+        if isinstance(node.value, int):
             node.type = self.current.lookup("int")
         elif isinstance(node.value, float):
             node.type = self.current.lookup("float")
-        elif isinstance(node.value, str):
-            node.type = self.current.lookup("string")
 
     def visit_PrintStatement(self, node):
         self.visit(node.expr)
@@ -323,7 +320,6 @@ class CheckProgramVisitor(NodeVisitor):
         self.visit(node.right)
         assert node.left.type == node.right.type, "Los tipos {} {} no coinciden".format(
             node.left.type.name, node.right.type.name)
-        print(node.left.type.bin_ops)
         sym = hoclex.operators[node.op]
         assert (sym in 
             node.left.type.bin_ops), "Operación %s no permitida para el tipo %s" % (node.op,
