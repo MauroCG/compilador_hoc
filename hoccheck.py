@@ -199,10 +199,7 @@ class CheckProgramVisitor(NodeVisitor):
         self.visit(node.asgn)
         self.visit(node.cond)
         self.visit(node.expr)
-        if not node.asgn.cond == hoctype.int_type:
-            error(node.lineno, "Tipo incorrecto para condición For")
-        else:
-            self.visit(node.body)
+        self.visit(node.body)
 
     def visit_UnaryOp(self, node):
         # 1. Asegúrese que la operación es compatible con el tipo
@@ -237,11 +234,11 @@ class CheckProgramVisitor(NodeVisitor):
 
     def visit_ConstDeclaration(self, node):
         # 1. Revise que el nombre de la constante no se ha definido
-        if self.symtab.lookup(node.id):
+        if self.current.lookup(node.id):
             error(node.lineno, "Símbolo %s ya definido" % node.id)
         # 2. Agrege una entrada a la tabla de símbolos
         else:
-            self.symtab.add(node.id, node)
+            self.current.add(node.id, node)
         self.visit(node.value)
         node.type = node.value.type
 
@@ -262,14 +259,6 @@ class CheckProgramVisitor(NodeVisitor):
             
         #node.type = self.current.lookup(node.type)
 
-    def visit_Typename(self, node):
-        # 1. Revisar que el nombre de tipo es válido que es actualmente un tipo
-        pass
-
-    def visit_Location(self, node):
-        # 1. Revisar que la localización es una variable válida o un valor constante
-        # 2. Asigne el tipo de la localización al nodo
-        pass
 
     def visit_LoadLocation(self, node):
         # 1. Revisar que loa localización cargada es válida.
@@ -310,10 +299,6 @@ class CheckProgramVisitor(NodeVisitor):
     def visit_ParamDecl(self, node):
         self.current.add(node.id, node)
 
-    def visit_Group(self, node):
-        self.visit(node.expression)
-        node.type = node.expression.type
-
     def visit_RelationalOp(self, node):
         self.visit(node.left)
         self.visit(node.right)
@@ -325,7 +310,14 @@ class CheckProgramVisitor(NodeVisitor):
          node.left.type.name) 
 
     def visit_FunCall(self, node):
-        pass
+        assert self.current.lookup(
+            node.id), "La función %s no esta definida" % node.id
+        if node.arglist:
+            self.visit(node.arglist)
+
+    def visit_Arglist(self, node):
+        for arg in node.arglist:
+            self.visit(arg)
 
     def visit_Expr(self, node):
         self.visit(node.expr)

@@ -132,7 +132,7 @@ class ForStatement(AST):
 
 
 class FuncCall(AST):
-    _fields = ['func_name', 'arglist']
+    _fields = ['id', 'arglist']
 
 
 class ProcCall(AST):

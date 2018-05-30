@@ -278,10 +278,6 @@ class HOCParser(Parser):
     def term(self, p):
         return FuncCall(p[0], p[2])
 
-    @_('ID LPAREN RPAREN')
-    def term(self, p):
-        return FuncCall(p[0], None)
-
     @_('term TIMES fact')
     def term(self, p):
         return BinaryOp(p[1], p[0], p[2])
