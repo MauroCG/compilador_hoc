@@ -46,13 +46,13 @@ class HocType(object):
 int_type = HocType("int",
         set(('PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD', 'EXP',
          'LE', 'LT', 'EQ', 'NE', 'GT', 'GE')),
-        set(('MINUS')),
+        set(('MINUS', 'PLUS')),
         )
 
 float_type = HocType("float",
         set(('PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD', 'EXP',
          'LE', 'LT', 'EQ', 'NE', 'GT', 'GE')),
-        set(('MINUS')),
+        set(('MINUS', 'PLUS')),
         )
 
 '''string_type = HocType("string",

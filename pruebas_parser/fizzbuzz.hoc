@@ -25,4 +25,5 @@ func fizzbuzz(n int) int {
   } else { return; }
 }
 
-print "hola"
+var n2 int = -5
+print n

@@ -187,7 +187,9 @@ class HOCParser(Parser):
 
     @_('NOT expr semi')
     def cond(self, p):
-        return UnaryOp(p[0], p[1])
+        node = UnaryOp(p[0], p[1])
+        node.lineno = p.lineno
+        return node
 
 
     @_('NEWLINE')
@@ -268,7 +270,9 @@ class HOCParser(Parser):
 
     @_('MINUS expr %prec UMINUS')
     def expr(self, p):
-        return UnaryOp(p[0], p[1])
+        node = UnaryOp(p[0], p[1])
+        node.lineno = p.lineno
+        return node
 
     @_('term')
     def expr(self, p):

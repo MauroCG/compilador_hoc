@@ -207,7 +207,7 @@ class CheckProgramVisitor(NodeVisitor):
         self.visit(node.left)
         if not hoclex.operators[node.op] in node.left.type.un_ops:
             error(node.lineno, "Operación no soportada con este tipo")
-        self.type = node.left.type
+        node.type = node.left.type
 
     def visit_BinaryOp(self, node):
         # 1. Asegúrese que los operandos left y right tienen el mismo tipo
@@ -264,7 +264,7 @@ class CheckProgramVisitor(NodeVisitor):
         # 1. Revisar que loa localización cargada es válida.
         # 2. Asignar el tipo apropiado
         sym = self.current.lookup(node.name)
-        assert sym, "Variable %s no definida" % sym
+        assert sym, "Variable %s no definida" % node.name
         symtype = self.current.lookup(sym.type)
         node.type = symtype
 
@@ -309,7 +309,7 @@ class CheckProgramVisitor(NodeVisitor):
             node.left.type.bin_ops), "Operación %s no permitida para el tipo %s" % (node.op,
          node.left.type.name) 
 
-    def visit_FunCall(self, node):
+    def visit_FuncCall(self, node):
         assert self.current.lookup(
             node.id), "La función %s no esta definida" % node.id
         if node.arglist:

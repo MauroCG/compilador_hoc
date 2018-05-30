@@ -30,6 +30,7 @@ class AST(object):
     _fields = []
 
     def __init__(self, *args, **kwargs):
+        self.lineno = None
         assert len(args) == len(self._fields)
         for name, value in zip(self._fields, args):
             setattr(self, name, value)
