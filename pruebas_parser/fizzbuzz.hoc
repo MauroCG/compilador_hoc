@@ -25,5 +25,5 @@ func fizzbuzz(n int) int {
   } else { return; }
 }
 
-var n2 int = -5
-print n
+var n2 int = -5*(2+(-12))/10//.6
+print n2

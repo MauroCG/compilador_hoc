@@ -284,19 +284,27 @@ class HOCParser(Parser):
 
     @_('term TIMES fact')
     def term(self, p):
-        return BinaryOp(p[1], p[0], p[2])
+        node = BinaryOp(p[1], p[0], p[2])
+        node.lineno = p.lineno
+        return node
 
     @_('term DIVIDE fact')
     def term(self, p):
-        return BinaryOp(p[1], p[0], p[2])
+        node = BinaryOp(p[1], p[0], p[2])
+        node.lineno = p.lineno
+        return node
 
     @_('term MOD fact')
     def term(self, p):
-        return BinaryOp(p[1], p[0], p[2])
+        node = BinaryOp(p[1], p[0], p[2])
+        node.lineno = p.lineno
+        return node
 
     @_('term EXP fact')
     def term(self, p):
-        return BinaryOp(p[1], p[0], p[2])
+        node = BinaryOp(p[1], p[0], p[2])
+        node.lineno = p.lineno
+        return node
 
     @_('fact')
     def term(self, p):

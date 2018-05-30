@@ -218,8 +218,10 @@ class CheckProgramVisitor(NodeVisitor):
         if node.left.type == node.right.type:
             node.type = node.left.type
         else:
-            error(node.lineno, "Tipos incompatibles, " + node.left.type + " "
-                  + node.op + " " + node.right.type)
+            error(node.lineno, "Tipos incompatibles para la operación "
+             + node.op + " : " + node.left.type.name 
+             + node.op + node.right.type.name)
+        node.type = node.left.type
 
     def visit_AsgnIdExpr(self, node):
         # 1. Asegúrese que la localización de la asignación está definida
