@@ -191,20 +191,7 @@ class HOCParser(Parser):
         node.lineno = p.lineno
         return node
 
-
-    @_('NEWLINE')
-    def stmtlist(self, p):
-        pass
-
-    @_('asgn semi')
-    def stmtlist(self, p):
-        return Stmtlist([p[0]])
-
-    @_('expr semi')
-    def stmtlist(self, p):
-        return Stmtlist([p[0]])
-
-    @_('stmt semi')
+    @_('empty')
     def stmtlist(self, p):
         return Stmtlist([p[0]])
 
@@ -216,6 +203,15 @@ class HOCParser(Parser):
             return p[0]
 
     @_('stmtlist stmt semi')
+    def stmtlist(self, p):
+        if p.stmtlist is None:
+            plist = [p[1]]
+            return Stmtlist(plist)
+        else:
+            p[0].append(p[1])
+            return p[0]
+
+    @_('stmtlist asgn semi')
     def stmtlist(self, p):
         if p.stmtlist is None:
             plist = [p[1]]
@@ -260,11 +256,11 @@ class HOCParser(Parser):
     def expr(self, p):
         return AsgnIdExpr(p[0], p[1],None)
 
-    @_('expr PLUS term')
+    @_('expr PLUS expr')
     def expr(self, p):
         return BinaryOp(p[1], p[0], p[2])
 
-    @_('expr MINUS term')
+    @_('expr MINUS expr')
     def expr(self, p):
         return BinaryOp(p[1], p[0], p[2])
 
@@ -273,61 +269,53 @@ class HOCParser(Parser):
         node = UnaryOp(p[0], p[1])
         node.lineno = p.lineno
         return node
-
-    @_('term')
-    def expr(self, p):
-        return p[0]
-
+    
     @_('ID LPAREN arglist RPAREN')
-    def term(self, p):
+    def expr(self, p):
         return FuncCall(p[0], p[2])
 
-    @_('term TIMES fact')
-    def term(self, p):
+    @_('expr TIMES expr')
+    def expr(self, p):
         node = BinaryOp(p[1], p[0], p[2])
         node.lineno = p.lineno
         return node
 
-    @_('term DIVIDE fact')
-    def term(self, p):
+    @_('expr DIVIDE expr')
+    def expr(self, p):
         node = BinaryOp(p[1], p[0], p[2])
         node.lineno = p.lineno
         return node
 
-    @_('term MOD fact')
-    def term(self, p):
+    @_('expr MOD expr')
+    def expr(self, p):
         node = BinaryOp(p[1], p[0], p[2])
         node.lineno = p.lineno
         return node
 
-    @_('term EXP fact')
-    def term(self, p):
+    @_('expr EXP expr')
+    def expr(self, p):
         node = BinaryOp(p[1], p[0], p[2])
         node.lineno = p.lineno
         return node
-
-    @_('fact')
-    def term(self, p):
-        return p[0]
 
     @_('LPAREN expr RPAREN')
-    def fact(self, p):
+    def expr(self, p):
         return Expr(p[1])
 
     @_('INTEGER')
-    def fact(self, p):
+    def expr(self, p):
         return Literal(p[0])
 
     @_('NUMFLOAT')
-    def fact(self, p):
+    def expr(self, p):
         return Literal(p[0])
 
     @_('ID')
-    def fact(self, p):
+    def expr(self, p):
         return LoadLocation(p[0])
 
     @_('ARG')
-    def fact(self, p):
+    def expr(self, p):
         return p[0]
 
     @_('expr')
