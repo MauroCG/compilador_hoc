@@ -141,7 +141,7 @@ class HOCParser(Parser):
     def stmt(self, p):
         return WhileStatement(p[2], p[5])
 
-    @_('FOR LPAREN asgn COMMA cond COMMA expr RPAREN LBRACE stmtlist RBRACE')
+    @_('FOR LPAREN asgn SEMI cond SEMI expr RPAREN LBRACE stmtlist RBRACE')
     def stmt(self, p):
         return ForStatement(p[2], p[4], p[6], p[9])
 
@@ -242,19 +242,19 @@ class HOCParser(Parser):
 
     @_('INC ID')
     def expr(self, p):
-        return AsgnIdExpr(p[1], p[0],None)
+        return AsgnIdExpr(LoadLocation(p[1]), p[0], None)
 
     @_('DEC ID')
     def expr(self, p):
-        return AsgnIdExpr(p[1], p[0],None)
+        return AsgnIdExpr(LoadLocation(p[1]), p[0], None)
 
     @_('ID INC')
     def expr(self, p):
-        return AsgnIdExpr(p[0], p[1],None)
+        return AsgnIdExpr(LoadLocation(p[0]), p[1], None)
 
     @_('ID DEC')
     def expr(self, p):
-        return AsgnIdExpr(p[0], p[1],None)
+        return AsgnIdExpr(LoadLocation(p[0]), p[1], None)
 
     @_('expr PLUS expr')
     def expr(self, p):

@@ -27,3 +27,9 @@ func fizzbuzz(n int) int {
 
 var n2 int = -5*(2+(-12))/10//.6
 print n2
+
+var w int;
+for(w = 0; i < 10; i++) {
+  w += 10;
+  print w;
+}

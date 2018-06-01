@@ -229,10 +229,11 @@ class CheckProgramVisitor(NodeVisitor):
         assert sym, "Variable %s usada pero no definida" % node.location
         # 2. Revise que la asignación es permitida, pe. sym no es una constante
         # 3. Revise que los tipos coincidan.
-        self.visit(node.expr)
-        assert (sym.type == 
-            node.expr.type.name), "Los tipos %s %s no coinciden en la asignación" % (
-            sym.type, node.expr.type.name)
+        if not node.expr is None:
+            self.visit(node.expr)
+            assert (sym.type == 
+                node.expr.type.name), "Los tipos %s %s no coinciden en la asignación" % (
+                sym.type, node.expr.type.name)
 
     def visit_ConstDeclaration(self, node):
         # 1. Revise que el nombre de la constante no se ha definido
