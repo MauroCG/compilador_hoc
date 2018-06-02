@@ -289,18 +289,21 @@ class CheckProgramVisitor(NodeVisitor):
     def visit_FuncDecl(self, node):
         if self.current.lookup(node.id):
             error(node.lineno, "Nombre %s ya definido" % node.id)
-        self.current.add(node.id, node)
+        else:
+            self.current.add(node.id, node)
         if not node.params is None:
             self.visit(node.params)
         if not node.body is None:
             self.visit(node.body)
+        node.type = self.current.lookup(node.type)
 
     def visit_Parameters(self, node):
         for p in node.param_decls:
             self.visit(p)
 
     def visit_ParamDecl(self, node):
-        self.current.add(node.id, node)
+        if not self.current.lookup(node.id):
+            self.current.add(node.id, node)
 
     def visit_RelationalOp(self, node):
         self.visit(node.left)
@@ -317,6 +320,8 @@ class CheckProgramVisitor(NodeVisitor):
             node.id), "La función %s no esta definida" % node.id
         if node.arglist:
             self.visit(node.arglist)
+        sym = self.current.lookup(node.id)
+        node.type = sym.type
 
     def visit_Arglist(self, node):
         for arg in node.arglist:

@@ -115,7 +115,7 @@ class HOCParser(Parser):
 
     @_('PROC ID LPAREN formals RPAREN LBRACE stmtlist RBRACE')
     def stmt(self, p):
-        return ProcDecl(p[1], p[3], p[6])
+        return FuncDecl(p[1], p[3], None, p[6])
 
     @_('CONST ID ASSIGN INTEGER')
     def stmt(self, p):
@@ -185,7 +185,7 @@ class HOCParser(Parser):
     def cond(self, p):
         return LogicalOp(p[1], p[0], p[2])
 
-    @_('NOT expr semi')
+    @_('NOT expr')
     def cond(self, p):
         node = UnaryOp(p[0], p[1])
         node.lineno = p.lineno
@@ -220,6 +220,15 @@ class HOCParser(Parser):
             p[0].append(p[1])
             return p[0]
 
+    @_('stmtlist expr semi')
+    def stmtlist(self, p):
+        if p.stmtlist is None:
+            plist = [p[1]]
+            return Stmtlist(plist)
+        else:
+            p[0].append(p[1])
+            return p[0]
+
     @_('INT')
     def type(self, p):
         return p[0]
@@ -232,6 +241,10 @@ class HOCParser(Parser):
     def type(self, p):
         pass
 
+    @_('ID')
+    def identifier(self, p):
+        return p[0]
+
     @_('READ LPAREN ID RPAREN')
     def expr(self, p):
         return Read(p[2])
@@ -240,20 +253,24 @@ class HOCParser(Parser):
     def expr(self, p):
         return Bltin(p[2])
 
-    @_('INC ID')
+    @_('unaryExpr')
     def expr(self, p):
+        return p[0]
+
+    @_('INC')
+    def unaryOperator(self, p):
+        return p[0]
+
+    @_('DEC')
+    def unaryOperator(self, p):
+        return p[0]
+
+    @_('unaryOperator identifier')
+    def unaryExpr(self, p):
         return AsgnIdExpr(LoadLocation(p[1]), p[0], None)
 
-    @_('DEC ID')
-    def expr(self, p):
-        return AsgnIdExpr(LoadLocation(p[1]), p[0], None)
-
-    @_('ID INC')
-    def expr(self, p):
-        return AsgnIdExpr(LoadLocation(p[0]), p[1], None)
-
-    @_('ID DEC')
-    def expr(self, p):
+    @_('identifier unaryOperator')
+    def unaryExpr(self, p):
         return AsgnIdExpr(LoadLocation(p[0]), p[1], None)
 
     @_('expr PLUS expr')
@@ -270,7 +287,7 @@ class HOCParser(Parser):
         node.lineno = p.lineno
         return node
     
-    @_('ID LPAREN arglist RPAREN')
+    @_('identifier LPAREN arglist RPAREN')
     def expr(self, p):
         return FuncCall(p[0], p[2])
 
@@ -310,7 +327,7 @@ class HOCParser(Parser):
     def expr(self, p):
         return Literal(p[0])
 
-    @_('ID')
+    @_('identifier')
     def expr(self, p):
         return LoadLocation(p[0])
 

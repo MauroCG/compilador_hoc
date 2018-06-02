@@ -395,14 +395,14 @@ class DotVisitor(NodeVisitor):
             value = getattr(node, field, None)
             if isinstance(value, list):
                 for item in value:
-                    if isinstance(item, ast.AST):
+                    if isinstance(item, AST):
                         self.visit(item)
                         self.dot.add_edge(pgv.Edge(target, self.stack.pop()))
                     elif(item is not None):#caso de ramas
                         targetHijo = self.new_node(None, item, 'diamond')
                         self.dot.add_node(targetHijo)
                         self.dot.add_edge(pgv.Edge(target, targetHijo))
-            elif isinstance(value, ast.AST):
+            elif isinstance(value, AST):
                 self.visit(value)
                 self.dot.add_edge(pgv.Edge(target, self.stack.pop()))
             elif(value is not None):#ramas...
