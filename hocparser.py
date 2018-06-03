@@ -122,7 +122,7 @@ class HOCParser(Parser):
     def stmt(self, p):
         return ConstDeclaration(p[1], Literal(p[3]))
 
-    @_('RETURN')
+    @_('RETURN SEMI')
     def stmt(self, p):
         return Statement(p[0], None)
 
