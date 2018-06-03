@@ -11,16 +11,13 @@ class HOCParser(Parser):
     tokens = HOCLexer.tokens
 
     precedence = (
-        ('right', 'ASSIGN'),
+        ('right', 'ASSIGN', 'ADDEQ', 'SUBEQ', 'MULEQ', 'DIVEQ', 'MODEQ'),
         ('left', 'OR'),
         ('left', 'AND'),
-        ('left', 'EQ', 'NE'),
-        ('left', 'LT', 'LE'),
-        ('left', 'GT', 'GE'),
+        ('left', 'GT', 'GE', 'LT', 'LE', 'EQ', 'NE'),
         ('left', 'PLUS', 'MINUS'),
         ('left', 'TIMES', 'DIVIDE', 'MOD'),
-        ('right', 'UMINUS'),
-        ('left', 'NOT'),
+        ('left', 'UMINUS', 'NOT', 'INC', 'DEC'),
         ('left', 'LPAREN', 'RPAREN'),
         ('right', 'EXP')
     )
