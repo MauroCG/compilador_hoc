@@ -334,50 +334,50 @@ class HOCParser(Parser):
 
     @_('expr')
     def prlist(self, p):
-        return Prilist([Expr(p[0])])
+        return Prilist([PrintStatement(Expr(p[0]))])
 
     @_('STRING')
     def prlist(self, p):
-        return Prilist([Literal(p[0])])
+        return Prilist([PrintStatement(Literal(p[0]))])
 
     @_('LPAREN STRING RPAREN')
     def prlist(self, p):
-        return Prilist([Literal(p[1])])
+        return Prilist([PrintStatement(Literal(p[1]))])
 
     @_('LPAREN prlist COMMA expr RPAREN')
     def prlist(self, p):
         if p.prlist is None:
-            return Prilist([Expr(p[3])])
+            return Prilist([PrintStatement(Expr(p[3]))])
         else:
             plist = p[1]
-            plist.append(Expr(p[3]))
+            plist.append(PrintStatement(Expr(p[3])))
             return plist
 
     @_('LPAREN prlist COMMA STRING RPAREN')
     def prlist(self, p):
         if p.prlist is None:
-            return Prilist([Literal(p[3])])
+            return Prilist([PrintStatement(Literal(p[3]))])
         else:
             plist = p[1]
-            plist.append(Literal(p[3]))
+            plist.append(PrintStatement(Literal(p[3])))
             return plist
 
     @_('prlist COMMA expr')
     def prlist(self, p):
         if p.prlist is None:
-            return Prilist([Expr(p[2])])
+            return Prilist([PrintStatement(Expr(p[2]))])
         else:
             plist = p[0]
-            plist.append(Expr(p[2]))
+            plist.append(PrintStatement(Expr(p[2])))
             return plist
 
     @_('prlist COMMA STRING')
     def prlist(self, p):
         if p.prlist is None:
-            return Prilist([Literal(p[2])])
+            return Prilist([PrintStatement(Literal(p[2]))])
         else:
             plist = p[0]
-            plist.append(Literal(p[2]))
+            plist.append(PrintStatement(Literal(p[2])))
             return plist
 
     @_('ID type')

@@ -162,6 +162,9 @@ class Prilist(AST):
     def append(self, expr):
         self.listexpr.append(expr)
 
+class PrintStatement(AST):
+    _fields = ['expr']
+
 
 class Read(AST):
     _fields = ['id']

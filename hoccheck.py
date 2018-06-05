@@ -178,6 +178,7 @@ class CheckProgramVisitor(NodeVisitor):
         # de simbolos
         node.symtab.add("int", hoctype.int_type)
         node.symtab.add("float", hoctype.float_type)
+        node.symtab.add("string", hoctype.string_type)
 
         # 1. Visita todas las declaraciones (statements)
         # 2. Registra la tabla de simbolos asociada
@@ -231,7 +232,7 @@ class CheckProgramVisitor(NodeVisitor):
         # 3. Revise que los tipos coincidan.
         if not node.expr is None:
             self.visit(node.expr)
-            assert (sym.type == 
+            assert (sym.type.name == 
                 node.expr.type.name), "Los tipos %s %s no coinciden en la asignación" % (
                 sym.type, node.expr.type.name)
 
@@ -250,17 +251,18 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, "variable %s ya definida" % node.id)
         else:
             self.current.add(node.id, node)
+
+        symtype = self.current.lookup(node.type)
+        node.type = symtype
         
         # 2. Revise que el tipo de la expresión (si lo hay) es el mismo
         if node.value:
             self.visit(node.value)
-            assert(node.type == node.value.type.name), error(node.lineno, 
-                "El valor asignado debe ser de tipo %s" % node.type)
+            assert(node.type == node.value.type), error(node.lineno, 
+                "El valor asignado debe ser de tipo %s" % node.type.name)
         # 4. Si no hay expresión, establecer un valor inicial para el valor
         else:
             node.value = None
-            
-        #node.type = self.current.lookup(node.type)
 
 
     def visit_LoadLocation(self, node):
@@ -268,8 +270,7 @@ class CheckProgramVisitor(NodeVisitor):
         # 2. Asignar el tipo apropiado
         sym = self.current.lookup(node.name)
         assert sym, "Variable %s no definida" % node.name
-        symtype = self.current.lookup(sym.type)
-        node.type = symtype
+        node.type = sym.type
 
     def visit_Literal(self, node):
         # Adjunte un tipo apropiado a la constante
@@ -277,6 +278,8 @@ class CheckProgramVisitor(NodeVisitor):
             node.type = self.current.lookup("int")
         elif isinstance(node.value, float):
             node.type = self.current.lookup("float")
+        elif isinstance(node.value, str):
+            node.type = self.current.lookup("string")
 
     def visit_PrintStatement(self, node):
         self.visit(node.expr)
@@ -303,6 +306,7 @@ class CheckProgramVisitor(NodeVisitor):
 
     def visit_ParamDecl(self, node):
         if not self.current.lookup(node.id):
+            node.type = self.current.lookup(node.type)
             self.current.add(node.id, node)
 
     def visit_RelationalOp(self, node):
@@ -313,7 +317,9 @@ class CheckProgramVisitor(NodeVisitor):
         sym = hoclex.operators[node.op]
         assert (sym in 
             node.left.type.bin_ops), "Operación %s no permitida para el tipo %s" % (node.op,
-         node.left.type.name) 
+         node.left.type.name)
+
+        node.type = node.left.type 
 
     def visit_FuncCall(self, node):
         assert self.current.lookup(

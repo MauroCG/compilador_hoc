@@ -182,6 +182,8 @@ binary_ops = {
 	'-' : 'sub',
 	'*' : 'mul',
 	'/' : 'div',
+	'^' : 'exp',
+	'%' : 'mod',
 	'<' : 'lt',
 	'>' : 'gt',
 	'==': 'eq',
@@ -189,13 +191,13 @@ binary_ops = {
 	'<=': 'le',
 	'>=': 'ge',
 	'&&': 'land',
-	'||': 'lor',
+	'||': 'lor'
 }
 
 unary_ops = {
 	'+' : 'uadd',
 	'-' : 'usub',
-	'!' : 'lnot',
+	'!' : 'lnot'
 }
 
 # PASO 2: Implementar la siguiente clase Visitor Node que creará una
@@ -286,7 +288,8 @@ class GenerateCode(hocast.NodeVisitor):
 		self.code.append(inst)
 
 	def visit_Program(self,node):
-		self.visit(node.program)
+		for inst in node.program:
+			self.visit(inst)
 
 	#def visit_Statements(self,node):
 	#    self.visit(node.expr)
@@ -352,11 +355,11 @@ class GenerateCode(hocast.NodeVisitor):
 	#    inst = ('print_'+node.expr.type.name, node.expr.gen_location)
 	#    self.code.append(inst)
 
-	def visit_AssignmentStatement(self,node):
-		self.visit(node.value)
+	def visit_AsgnIdExpr(self,node):
+		self.visit(node.expr)
 		
-		inst = ('store_'+node.value.type.name, 
-		        node.value.gen_location, 
+		inst = ('store_'+node.expr.type.name, 
+		        node.expr.gen_location, 
 		        node.location)
 		self.code.append(inst)
 
@@ -409,6 +412,10 @@ class GenerateCode(hocast.NodeVisitor):
 		self.visit(node.expression)
 		node.gen_location = node.expression.gen_location
 
+	def visit_Expr(self, node):
+		self.visit(node.expr)
+		node.gen_location = node.expr.gen_location
+
 	#def visit_FunCall(self,node):
 	#    self.visit(node.expr)
 	#    inst = ('print_'+node.expr.type.name, node.expr.gen_location)
@@ -441,20 +448,17 @@ def generate_code(node):
 
 if __name__ == '__main__':
 	import hoclex
-	import hocparse
+	import hocparser
 	import hoccheck
 	import sys
-	from errors import subscribe_errors, errors_reported
 	lexer = hoclex.make_lexer()
-	parser = hocparse.make_parser()
-	with subscribe_errors(lambda msg: sys.stdout.write(msg+"\n")):
-		program = parser.parse(open(sys.argv[1]).read())
-		# Revise el programa
-		hoccheck.check_program(program)
-		# Si no ocurre errore, genere código
-		if not errors_reported():
-			code = generate_code(program)
-			# Emite la secuencia de código
-			hocblock.PrintBlocks().visit(code.start_block)
+	parser = hocparser.make_parser()
+	program = parser.parse(lexer.tokenize(open(sys.argv[1]).read()))
+	# Revise el programa
+	hoccheck.check_program(program)
+	# Si no ocurre errore, genere código
+	code = generate_code(program)
+	# Emite la secuencia de código
+	hocblock.PrintBlocks().visit(code.start_block)
 			#for inst in code.code:
 			#    print(inst)

@@ -55,12 +55,12 @@ float_type = HocType("float",
         set(('MINUS', 'PLUS')),
         )
 
-'''string_type = HocType("string",
+string_type = HocType("string",
         set(('PLUS',)),
         set(),
         )
 
-boolean_type = HocType("bool",
+'''boolean_type = HocType("bool",
         set(('LAND', 'LOR', 'EQ', 'NE')),
         set(('LNOT',))
         )'''
