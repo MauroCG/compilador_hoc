@@ -334,6 +334,24 @@ class GenerateCode(hocast.NodeVisitor):
 		self.code.append(inst)
 		node.gen_location = target
 
+
+	def visit_FuncCall(self,node):
+		arglist_gen_locations = []
+		if node.arglist:
+			self.visit(node.arglist)
+			for arg in node.arglist.arglist:
+				arglist_gen_locations.append(arg.gen_location)
+		target = self.new_temp(node.type)
+		inst = ('call_'+node.type.name,
+		        node.id, *arglist_gen_locations,
+		        target)
+		self.code.append(inst)
+		node.gen_location = target
+
+	def visit_Arglist(self, node):
+		for arg in node.arglist:
+			self.visit(arg)
+
 	#def visit_Extern(self,node):
 	#    self.visit(node.expr)
 	#    inst = ('print_'+node.expr.type.name, node.expr.gen_location)
@@ -367,7 +385,7 @@ class GenerateCode(hocast.NodeVisitor):
 		self.visit(node.left)
 		target = self.new_temp(node.type)
 		opcode = unary_ops[node.op] + "_" + node.left.type.name
-		inst = (opcode, node.left.gen_location)
+		inst = (opcode, node.left.gen_location, target)
 		self.code.append(inst)
 		node.gen_location = target
 
@@ -381,6 +399,7 @@ class GenerateCode(hocast.NodeVisitor):
 		# then branch
 		if_block.if_branch = BasicBlock()
 		self.switch_block(if_block.if_branch)
+		self.visit(node.condition)
 		self.visit(node.then_b)
 		# else branch
 		if node.else_b:

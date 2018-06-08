@@ -293,12 +293,12 @@ class CheckProgramVisitor(NodeVisitor):
         if self.current.lookup(node.id):
             error(node.lineno, "Nombre %s ya definido" % node.id)
         else:
+            node.type = self.current.lookup(node.type)
             self.current.add(node.id, node)
         if not node.params is None:
             self.visit(node.params)
         if not node.body is None:
             self.visit(node.body)
-        node.type = self.current.lookup(node.type)
 
     def visit_Parameters(self, node):
         for p in node.param_decls:

@@ -2,11 +2,11 @@
    Prints 'n' Fibonacci number
 */
 func fibo(n int) int {
-  if(n >= 1) return 1
-  return fib(n-1) + fib(n-2)
+  if(n >= 1) { return 1 }
+  return fibo(n-1) + fibo(n-2)
 }
 
-print "Cuarto número de la secuencia de fibonacci: ", fib(4)
+print "Cuarto número de la secuencia de fibonacci: ", fibo(4)
 
 //prueba función con múltiples paeameteos
 fibo(4)
